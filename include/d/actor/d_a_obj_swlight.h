@@ -12,8 +12,8 @@ class J3DMaterial;
 class dBgW;
 
 namespace daObjSwlight {
-    static void setMaterial(J3DMaterial*, unsigned char);
-    static void setMaterial_Before_mirror(J3DMaterial*, unsigned char);
+    static void setMaterial(J3DMaterial*, u8);
+    static void setMaterial_Before_mirror(J3DMaterial*, u8);
 
     class Act_c : public fopAc_ac_c {
         typedef void (Act_c::*ModeFunc)();

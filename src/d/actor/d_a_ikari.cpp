@@ -146,7 +146,7 @@ cPhs_State daIkari_c::_create() {
                 160.0f * scaleX, 100.0f * scaleX, 600.0f * scaleX);
             fopAcM_setCullSizeFar(this, 10.0f);
 
-            mTimer = (short)(int)cM_rndF(32768.0f);
+            mTimer = (s16)(int)cM_rndF(32768.0f);
         }
     }
 

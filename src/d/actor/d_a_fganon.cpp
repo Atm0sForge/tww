@@ -794,8 +794,7 @@ void down(fganon_class* i_this) {
             break;
         }
         case 3: {
-            int frame = i_this->mpMorf->getFrame();
-            if (frame == 2) {
+            if ((int)i_this->mpMorf->getFrame() == 2) {
                 fopAcM_monsSeStart(a_this, JA_SE_CV_PG_TIRED, 0);
             }
             break;

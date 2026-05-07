@@ -76,7 +76,9 @@ BOOL daObjEbomzo::Act_c::Create() {
         mMode = Ebomzo_Mode_Fall;
         current.angle.x = 0x4000;
     }
-    else mMode = Ebomzo_Mode_Check;
+    else {
+        mMode = Ebomzo_Mode_Check;
+    }
 
     return TRUE;
 }

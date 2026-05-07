@@ -402,7 +402,7 @@ bool Act_c::_execute() {
 }
 
 /* 00001714-0000187C       .text setMaterial__12daObjSwlightFP11J3DMaterialUc */
-void setMaterial(J3DMaterial* material, unsigned char arg2) {
+void setMaterial(J3DMaterial* material, u8 arg2) {
     while (material != NULL) {
         if (arg2 == 0) {
             material->getShape()->hide();
@@ -425,7 +425,7 @@ void setMaterial(J3DMaterial* material, unsigned char arg2) {
 }
 
 /* 0000187C-00001970       .text setMaterial_Before_mirror__12daObjSwlightFP11J3DMaterialUc */
-void setMaterial_Before_mirror(J3DMaterial* material, unsigned char arg2) {
+void setMaterial_Before_mirror(J3DMaterial* material, u8 arg2) {
     while (material != NULL) {
         if (arg2 == 0) {
             material->getShape()->hide();
