@@ -2210,9 +2210,7 @@ cPhs_State daNpc_Ls1_c::_create() {
 
     cPhs_State state;
 
-#if VERSION > VERSION_DEMO
-    fopAcM_ct(this, daNpc_Ls1_c);
-#endif 
+    fopAcM_ct_Retail(this, daNpc_Ls1_c); 
 
     if (!decideType(fopAcM_GetParam(this) & 0xFF)) {
         return cPhs_ERROR_e;

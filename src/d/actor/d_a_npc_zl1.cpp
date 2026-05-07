@@ -2882,9 +2882,7 @@ cPhs_State daNpc_Zl1_c::_create() {
     };
 
     cPhs_State state;
-#if VERSION > VERSION_DEMO
-    fopAcM_ct(this, daNpc_Zl1_c);
-#endif
+    fopAcM_ct_Retail(this, daNpc_Zl1_c);
     if(!decideType(fopAcM_GetParam(this) & 0xFF)) { // idk if this is supposed to be here
         return cPhs_ERROR_e;
     }

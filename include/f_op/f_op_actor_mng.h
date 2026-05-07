@@ -12,14 +12,22 @@
 #include "d/d_event.h"
 
 // The name of this macro is official and comes from a TP debug assert: "fopAcM_ct No Call !!"
-#define fopAcM_ct(ptr,ClassName) \
-    if (!fopAcM_CheckCondition(ptr, fopAcCnd_INIT_e)) { \
-        new (ptr) ClassName(); \
-        fopAcM_OnCondition(ptr, fopAcCnd_INIT_e); \
+#define fopAcM_ct(ptr, ClassName)                                                                  \
+    if (!fopAcM_CheckCondition(ptr, fopAcCnd_INIT_e)) {                                            \
+        new (ptr) ClassName();                                                                     \
+        fopAcM_OnCondition(ptr, fopAcCnd_INIT_e);                                                  \
     }
 
 // Unofficial name, kept to avoid conflicts with open PRs. TODO: Remove later.
 #define fopAcM_SetupActor fopAcM_ct
+
+#if VERSION == VERSION_DEMO
+#define fopAcM_ct_Demo fopAcM_ct
+#define fopAcM_ct_Retail(ptr, ClassName)
+#else
+#define fopAcM_ct_Demo(ptr, ClassName)
+#define fopAcM_ct_Retail fopAcM_ct
+#endif
 
 class J3DModelData;
 class daItem_c;
