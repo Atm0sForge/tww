@@ -19,14 +19,24 @@ namespace daObjSwlight {
         typedef void (Act_c::*ModeFunc)();
 
     public:
-        
         struct Attr_c {
             /* 0x00 */ s16 m00;
             /* 0x04 */ f32 m04;
             /* 0x08 */ f32 m08;
             /* 0x0C */ f32 m0C;
         }; // size = 0x10
-                
+
+        enum Prm_e {
+            PRM_SWSAVE_W = 0x08,
+            PRM_SWSAVE_S = 0x00,
+            
+            PRM_SWSAVE2_W = 0x08,
+            PRM_SWSAVE2_S = 0x08,
+            
+            PRM_TYPE_W = 0x01,
+            PRM_TYPE_S = 0x10,
+        };
+   
         void get_power() const {}
         bool is_switch() const {
             return fopAcM_isSwitch(const_cast<Act_c*>(this), prm_get_swSave());
@@ -38,22 +48,18 @@ namespace daObjSwlight {
             fopAcM_onSwitch(const_cast<Act_c*>(this), prm_get_swSave());
         }
         s32 prm_get_swSave() const {
-            return daObj::PrmAbstract(this, 8, 0);
+            return daObj::PrmAbstract(this, PRM_SWSAVE_W, PRM_SWSAVE_S);
         }
         s32 prm_get_swSave2() const {
-            return daObj::PrmAbstract(this, 8, 8);
+            return daObj::PrmAbstract(this, PRM_SWSAVE2_W, PRM_SWSAVE2_S);
         }
         s32 prm_get_type() const {
-            return daObj::PrmAbstract(this, 1, 0x10);
+            return daObj::PrmAbstract(this, PRM_TYPE_W, PRM_TYPE_S);
         }
     
         bool is_switch2() const;
         static BOOL solidHeapCB(fopAc_ac_c*);
-#if VERSION == VERSION_DEMO
         bool create_heap();
-#else
-        u8 create_heap();
-#endif
         cPhs_State _create();
         bool _delete();
         static BOOL jnodeCB_moon(J3DNode*, int);

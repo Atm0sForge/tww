@@ -62,11 +62,7 @@ BOOL Act_c::solidHeapCB(fopAc_ac_c* i_this) {
 }
 
 /* 00000178-0000045C       .text create_heap__Q212daObjSwlight5Act_cFv */
-#if VERSION == VERSION_DEMO
 bool Act_c::create_heap() {
-#else
-u8 Act_c::create_heap() {
-#endif
     J3DModelData* modelData = static_cast<J3DModelData*>(dComIfG_getObjectRes(M_arcname, MMIRROR_BDL_MSUSW));
     JUT_ASSERT(317, modelData != NULL);
 
@@ -95,37 +91,32 @@ u8 Act_c::create_heap() {
     if (m2C0 != NULL) {
         cBgD_t* bgw_data = static_cast<cBgD_t*>(dComIfG_getObjectRes(M_arcname, MMIRROR_DZB_MSUSW));
         JUT_ASSERT(361, bgw_data != NULL);
-        if (!m2C0->Set(bgw_data, cBgW::MOVE_BG_e, &this->mF38)) {
+        if (!m2C0->Set(bgw_data, cBgW::MOVE_BG_e, &mF38)) {
             bVar1 = true;
         }
     }
 
-    bool iVar8 = false;
-    if (m298 != NULL && iVar4) {
-        if (iVar6 && bVar1) {
-            iVar8 = true;
-        }
-    }
-
-#if VERSION > VERSION_DEMO
+#if VERSION == VERSION_DEMO
+    return m298 != NULL && iVar4 && iVar6 && bVar1;
+#else
+    const bool iVar8 = m298 != NULL && iVar4 && iVar6 && bVar1;
     if (!iVar8) {
         m2C0 = NULL;
     }
-#endif
-
     return iVar8;
+#endif
 }
 
 /* 0000045C-00000704       .text _create__Q212daObjSwlight5Act_cFv */
 cPhs_State Act_c::_create() {
-#if VERSION == VERSION_DEMO
-    mF24 = prm_get_type();
+#if VERSION > VERSION_DEMO
+    fopAcM_SetupActor(this, Act_c);
 #endif
 
-    fopAcM_SetupActor(this, Act_c);
-
-#if VERSION > VERSION_DEMO
     mF24 = prm_get_type();
+
+#if VERSION == VERSION_DEMO
+    fopAcM_SetupActor(this, Act_c);
 #endif
 
     cPhs_State PVar2 = dComIfG_resLoad(&mPhase, M_arcname);
@@ -211,6 +202,7 @@ void Act_c::init_cc() {
 
 /* 00000E04-00000FC4       .text set_cc_pos__Q212daObjSwlight5Act_cFv */
 void Act_c::set_cc_pos() {
+    /* Nonmatching */
     f32 tmp0C;
     f32 tmp04;
     f32 tmp08;
@@ -422,12 +414,12 @@ void setMaterial(J3DMaterial* material, unsigned char arg2) {
             material->getShape()->show();
             if (arg2 == 0xFF) {
                 material->setMaterialMode(1);
-                material->mPEBlock->getZMode()->setUpdateEnable(1);
-                material->mPEBlock->getBlend()->setType(GX_BM_NONE);
+                material->getZMode()->setUpdateEnable(1);
+                material->getBlend()->setType(GX_BM_NONE);
             } else {
                 material->setMaterialMode(4);
-                material->mPEBlock->getZMode()->setUpdateEnable(0);
-                material->mPEBlock->getBlend()->setType(GX_BM_BLEND);
+                material->getZMode()->setUpdateEnable(0);
+                material->getBlend()->setType(GX_BM_BLEND);
             }
             material->getTevKColor(3)->mColor.a = arg2;
         }
