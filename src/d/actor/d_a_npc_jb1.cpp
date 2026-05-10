@@ -224,7 +224,7 @@ void daNpc_Jb1_c::setAnm_ATR() {
 /* 00000658-0000071C       .text anmAtr__11daNpc_Jb1_cFUs */
 void daNpc_Jb1_c::anmAtr(u16 param_1) {
     switch(param_1) {
-        case 6:
+        case 6: {
             if (field_0x923 == 0) {
                 field_0x91A = 0xFF;
                 chg_anmAtr(dComIfGp_getMesgAnimeAttrInfo());
@@ -238,6 +238,7 @@ void daNpc_Jb1_c::anmAtr(u16 param_1) {
                 chg_anmTag();
             }
             break;
+        }
         case 0xE:
             field_0x923 = 0;
             break;
@@ -532,7 +533,7 @@ BOOL daNpc_Jb1_c::_execute() {
 /* 00000FBC-00001054       .text _delete__11daNpc_Jb1_cFv */
 BOOL daNpc_Jb1_c::_delete() {
     // fopAcM_GetID(); mentioned in debug map
-    DEMO_SELECT(dComIfG_deleteObjectRes("Jb"), dComIfG_resDelete(&mPhs, "Jb"));
+    dComIfG_resDeleteDemo(&mPhs, "Jb");
     dKy_plight_cut(&field_0x7F8);
 
     if(
@@ -563,9 +564,7 @@ cPhs_State daNpc_Jb1_c::_create() {
         0x000272E0
     };
 
-#if VERSION > VERSION_DEMO
-    fopAcM_SetupActor(this, daNpc_Jb1_c);
-#endif
+    fopAcM_ct_Retail(this, daNpc_Jb1_c);
 
     cPhs_State phase_state = dComIfG_resLoad(&mPhs, "Jb");
     switch(phase_state) {
@@ -580,9 +579,7 @@ cPhs_State daNpc_Jb1_c::_create() {
             }
             l_HIO.field_0x8++;
 
-#if VERSION == VERSION_DEMO
-            fopAcM_SetupActor(this, daNpc_Jb1_c);
-#endif
+            fopAcM_ct_Demo(this, daNpc_Jb1_c);
 
             if (!fopAcM_entrySolidHeap(this, CheckCreateHeap, a_size_tbl[field_0x920])) {
                 return cPhs_ERROR_e;
