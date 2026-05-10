@@ -532,7 +532,8 @@ BOOL daNpc_Jb1_c::_execute() {
 
 /* 00000FBC-00001054       .text _delete__11daNpc_Jb1_cFv */
 BOOL daNpc_Jb1_c::_delete() {
-    // fopAcM_GetID(); mentioned in debug map
+    fopAcM_RegisterDeleteID(this);
+
     dComIfG_resDeleteDemo(&mPhs, "Jb");
     dKy_plight_cut(&field_0x7F8);
 
@@ -560,6 +561,8 @@ static BOOL CheckCreateHeap(fopAc_ac_c* i_this) {
 
 /* 00001074-000011B8       .text _create__11daNpc_Jb1_cFv */
 cPhs_State daNpc_Jb1_c::_create() {
+    fopAcM_RegisterCreateID(this);
+
     static u32 a_size_tbl[] = {
         0x000272E0
     };

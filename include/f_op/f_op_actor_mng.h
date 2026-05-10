@@ -29,6 +29,12 @@
 #define fopAcM_ct_Retail fopAcM_ct
 #endif
 
+#define fopAcM_RegisterDeleteID(i_this)                                                            \
+    fopAcM_GetID(i_this)
+
+#define fopAcM_RegisterCreateID(i_this)                                                            \
+    fopAcM_GetID(i_this)
+
 class J3DModelData;
 class daItem_c;
 
