@@ -846,7 +846,7 @@ void daPy_lk_c::dProcLavaDamage_init_sub() {
     voiceStart(4);
     seStartMapInfo(JA_SE_LK_FALL_MAGMA);
     gravity = m_HIO->mAutoJump.m.field_0xC;
-    mDemo.setDemoType(5);
+    mDemo.setSpecialDemoType();
     dComIfGp_setPlayerStatus0(0, daPyStts0_UNK10000000_e);
     daPy_py_c::changePlayer(this);
 }
@@ -896,7 +896,7 @@ void daPy_lk_c::dProcFreezeDamage_init_sub(int param_0) {
 
     if (param_0 != 0) {
         mProcVar0.m3570 = 1;
-        mDemo.setDemoType(5);
+        mDemo.setSpecialDemoType();
         daPy_py_c::changePlayer(this);
     }
     endDamageEmitter();
@@ -952,7 +952,7 @@ void daPy_lk_c::dProcDead_init_sub() {
     mProcVar0.m3570 = 0;
     dComIfGp_setPlayerStatus0(0, daPyStts0_UNK20000000_e);
     m3628 = fopMsgM_create(PROC_GAMEOVER);
-    mDemo.setDemoType(5);
+    mDemo.setSpecialDemoType();
     daPy_py_c::changePlayer(this);
 }
 
@@ -1110,7 +1110,7 @@ BOOL daPy_lk_c::dProcDead() {
             if (!dComIfGp_checkPlayerStatus0(0, (daPyStts0_SHIP_RIDE_e | daPyStts0_SWIM_e))) {
                 if (frameCtrl.checkPass(129.0f)) {
                     voiceStart(0x17);
-                    m34BE = 6;
+                    setFootEffectPosType(6);
                 } else {
                     if (frameCtrl.getFrame() >= 129.0f) {
                         resetFootEffect();
@@ -2419,7 +2419,7 @@ BOOL daPy_lk_c::dProcLastCombo_init() {
     m35E8 = m35EC = 0.0f;
     bck = (J3DAnmTransform*)(dComIfG_getObjectRes(l_arcName, LINK_BCK_COMBO_TATE));
     mAtngshaBck.init(mpShmsModel->getModelData(), bck, false, J3DFrameCtrl::EMode_NONE, 0.0f, 0, -1, true);
-    m34BE = 4;
+    setFootEffectPosType(4);
     offNoResetFlg1(daPyFlg1_LAST_COMBO_WAIT);
     setBlurPosResource(LKANM__LASTCOMBO_POS);
     mProcVar0.m3570 = 1;

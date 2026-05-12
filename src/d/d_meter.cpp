@@ -2523,10 +2523,10 @@ void dMeter_xyInit(sub_meter_class* i_Meter) {
     for (s32 i = 0; i < 8; i++) {
         dMenu_baitNum[i] = dComIfGs_getBaitNum(i);
     }
-    for (int i = 0; i < 3; i++) {
-        dComIfGp_setSelectItem(i);
-        i_Meter->field_0x3021[i] = dComIfGp_getSelectItem(i);
-        dMeter_xyItemChange(i_Meter, i);
+    for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+        dComIfGp_setSelectItem(itemBtn);
+        i_Meter->field_0x3021[itemBtn] = dComIfGp_getSelectItem(itemBtn);
+        dMeter_xyItemChange(i_Meter, itemBtn);
     }
 }
 
@@ -2539,40 +2539,40 @@ void dMeter_xyMove(sub_meter_class* i_Meter) {
 
     bVar2 = true;
     bVar3 = false;
-    for (s32 i = 0; i < 3; i++) {
-        if (i_Meter->field_0x3021[i] != dComIfGp_getSelectItem(i)) {
-            dMeter_xyItemChange(i_Meter, i);
+    for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+        if (i_Meter->field_0x3021[itemBtn] != dComIfGp_getSelectItem(itemBtn)) {
+            dMeter_xyItemChange(i_Meter, itemBtn);
             bVar2 = false;
 #if VERSION == VERSION_DEMO
-            if ((i_Meter->field_0x3021[i] == dItem_MAGIC_ARROW_e) || (i_Meter->field_0x3021[i] == dItem_LIGHT_ARROW_e))
+            if ((i_Meter->field_0x3021[itemBtn] == dItem_MAGIC_ARROW_e) || (i_Meter->field_0x3021[itemBtn] == dItem_LIGHT_ARROW_e))
 #else
-            if ((dComIfGp_getSelectItem(i) != dItem_MAGIC_ARROW_e) && (dComIfGp_getSelectItem(i) != dItem_LIGHT_ARROW_e))
+            if ((dComIfGp_getSelectItem(itemBtn) != dItem_MAGIC_ARROW_e) && (dComIfGp_getSelectItem(itemBtn) != dItem_LIGHT_ARROW_e))
 #endif
             {
-                i_Meter->field_0x2320[i].pane->hide();
-                i_Meter->field_0x23c8[i].pane->hide();
-                i_Meter->field_0x2470[i].pane->hide();
-                i_Meter->field_0x2320[i].mUserArea = 0;
+                i_Meter->field_0x2320[itemBtn].pane->hide();
+                i_Meter->field_0x23c8[itemBtn].pane->hide();
+                i_Meter->field_0x2470[itemBtn].pane->hide();
+                i_Meter->field_0x2320[itemBtn].mUserArea = 0;
             }
-            i_Meter->field_0x3021[i] = dComIfGp_getSelectItem(i);
+            i_Meter->field_0x3021[itemBtn] = dComIfGp_getSelectItem(itemBtn);
         }
     }
     if (bVar2) {
         dMeter_xyItemCountUp(i_Meter);
     }
     dMeter_xyTrans(i_Meter);
-    for (s32 i = 0; i < 3; i++) {
-        dVar1 = g_dComIfG_gameInfo.play.mSelectItem[i];
+    for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+        dVar1 = dComIfGp_getSelectItem(itemBtn);
         if ((dVar1 == dItem_MAGIC_ARROW_e) || (dVar1 == dItem_LIGHT_ARROW_e)) {
-            dMeter_xyBowLightAnime(i_Meter, i);
+            dMeter_xyBowLightAnime(i_Meter, itemBtn);
         } else if (dVar1 == dItem_FOREST_WATER_e) {
             bVar3 = true;
-            local_38.set(i_Meter->field_0x2080[i].mPosCenter.x - 320.0f, i_Meter->field_0x2080[i].mPosCenter.y - 240.0f, 0.0f);
+            local_38.set(i_Meter->field_0x2080[itemBtn].mPosCenter.x - 320.0f, i_Meter->field_0x2080[itemBtn].mPosCenter.y - 240.0f, 0.0f);
             for (s32 j = 0; j < 2; j++) {
                 if (i_Meter->field_0x2f2c[j] != NULL) {
                     i_Meter->field_0x2f2c[j]->setGlobalTranslation(local_38.x, local_38.y, local_38.z);
                     i_Meter->field_0x2f2c[j]->playDrawParticle();
-                    i_Meter->field_0x2f2c[j]->setGlobalAlpha(i_Meter->field_0x2080[i].mNowAlpha);
+                    i_Meter->field_0x2f2c[j]->setGlobalAlpha(i_Meter->field_0x2080[itemBtn].mNowAlpha);
                 } else {
                     i_Meter->field_0x2f2c[j] = dComIfGp_particle_set2DmenuFore(dPa_name::ID_HM_J2_RUPYLIGHT, &local_38);
                 }
@@ -2611,119 +2611,96 @@ void dMeter_xyDraw(sub_meter_class* i_Meter) {
 }
 
 /* 801F5308-801F543C       .text dMeter_xyEquipItem__Fi */
-int dMeter_xyEquipItem(int param_1) {
-    u8 dVar2;
-    u8 uVar3;
-
-    param_1 = dComIfGs_getSelectItem(param_1);
-    if (param_1 < dInvSlot_ItemLast_e) {
-        dVar2 = g_dComIfG_gameInfo.save.getPlayer().getItem().getItem(param_1);
-    } else if (param_1 < dInvSlot_BeastFirst_e) {
-        dVar2 = dItem_NONE_e;
-    } else if (param_1 < dInvSlot_BeastLast_e) {
-        dVar2 = dComIfGs_getItemBeast(param_1 - dInvSlot_BeastFirst_e);
-    } else if (param_1 < dInvSlot_BaitFirst_e) {
-        dVar2 = dItem_NONE_e;
-    } else if (param_1 < dInvSlot_BaitLast_e) {
-        dVar2 = dComIfGs_getItemBait(param_1 - dInvSlot_BaitFirst_e);
-    } else if (param_1 < dInvSlot_ReserveFirst_e) {
-        dVar2 = dItem_NONE_e;
-    } else if (param_1 < dInvSlot_ReserveLast_e) {
-        dVar2 = dComIfGs_getItemReserve(param_1 - dInvSlot_ReserveFirst_e);
-    } else {
-        dVar2 = dItem_NONE_e;
-    }
-    uVar3 = 0;
-    switch (dVar2) {
+int dMeter_xyEquipItem(int i_itemBtn) {
+    int invIdx = dComIfGs_getSelectItem(i_itemBtn);
+    u8 itemNo = dComIfGs_getItem(invIdx);
+    u8 beastIdx = 0;
+    switch (itemNo) {
     case dItem_SKULL_NECKLACE_e:
-        uVar3 = 0;
+        beastIdx = dBeastIdx_SKULL_NECKLACE_e;
         break;
     case dItem_BOKOBABA_SEED_e:
-        uVar3 = 1;
+        beastIdx = dBeastIdx_BOKOBABA_SEED_e;
         break;
     case dItem_GOLDEN_FEATHER_e:
-        uVar3 = 2;
+        beastIdx = dBeastIdx_GOLDEN_FEATHER_e;
         break;
-    case BOKO_BELT:
-        uVar3 = 3;
+    case dItem_KNIGHTS_CREST_e:
+        beastIdx = dBeastIdx_KNIGHTS_CREST_e;
         break;
     case dItem_RED_JELLY_e:
-        uVar3 = 4;
+        beastIdx = dBeastIdx_RED_JELLY_e;
         break;
     case dItem_GREEN_JELLY_e:
-        uVar3 = 5;
+        beastIdx = dBeastIdx_GREEN_JELLY_e;
         break;
     case dItem_BLUE_JELLY_e:
-        uVar3 = 6;
+        beastIdx = dBeastIdx_BLUE_JELLY_e;
         break;
     case dItem_JOY_PENDANT_e:
-        uVar3 = 7;
+        beastIdx = dBeastIdx_JOY_PENDANT_e;
         break;
     }
-    return uVar3;
+    return beastIdx;
 }
 
 /* 801F543C-801F57B0       .text dMeter_xyItemNumberSet__FP15sub_meter_classi */
-void dMeter_xyItemNumberSet(sub_meter_class* i_Meter, int param_2) {
-    if ((dComIfGp_getSelectItem(param_2) == CAMERA) || (dComIfGp_getSelectItem(param_2) == CAMERA2)) {
-        dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
-        dMeter_PaneShow(&i_Meter->field_0x1fd8[param_2]);
-        dMeter_numberSet(i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getPictureNum());
-        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getPictureNum(), 3);
-    } else if ((dComIfGp_getSelectItem(param_2) == dItem_BOW_e) ||
-               (dComIfGp_getSelectItem(param_2) == dItem_MAGIC_ARROW_e || (dComIfGp_getSelectItem(param_2) == dItem_LIGHT_ARROW_e)))
+void dMeter_xyItemNumberSet(sub_meter_class* i_Meter, int i_itemBtn) {
+    if ((dComIfGp_getSelectItem(i_itemBtn) == CAMERA) || (dComIfGp_getSelectItem(i_itemBtn) == CAMERA2)) {
+        dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
+        dMeter_PaneShow(&i_Meter->field_0x1fd8[i_itemBtn]);
+        dMeter_numberSet(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getPictureNum());
+        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getPictureNum(), 3);
+    } else if ((dComIfGp_getSelectItem(i_itemBtn) == dItem_BOW_e) ||
+               (dComIfGp_getSelectItem(i_itemBtn) == dItem_MAGIC_ARROW_e || (dComIfGp_getSelectItem(i_itemBtn) == dItem_LIGHT_ARROW_e)))
     {
-        dMeter_PaneShow(&i_Meter->field_0x1f30[param_2]);
-        dMeter_PaneShow(&i_Meter->field_0x1fd8[param_2]);
+        dMeter_PaneShow(&i_Meter->field_0x1f30[i_itemBtn]);
+        dMeter_PaneShow(&i_Meter->field_0x1fd8[i_itemBtn]);
         if (dComIfGs_getArrowNum() < 10) {
-            dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
+            dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
         } else {
-            dMeter_numberSet(i_Meter->field_0x1f30[param_2].pane, dComIfGs_getArrowNum() / 10);
-            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[param_2].pane, dComIfGs_getArrowNum(), dComIfGs_getArrowMax());
+            dMeter_numberSet(i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getArrowNum() / 10);
+            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getArrowNum(), dComIfGs_getArrowMax());
         }
-        dMeter_numberSet(i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getArrowNum() % 10);
-        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getArrowNum(), dComIfGs_getArrowMax());
-    } else if (dComIfGp_getSelectItem(param_2) == dItem_BOMB_BAG_e) {
-        dMeter_PaneShow(&i_Meter->field_0x1f30[param_2]);
-        dMeter_PaneShow(&i_Meter->field_0x1fd8[param_2]);
+        dMeter_numberSet(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getArrowNum() % 10);
+        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getArrowNum(), dComIfGs_getArrowMax());
+    } else if (dComIfGp_getSelectItem(i_itemBtn) == dItem_BOMB_BAG_e) {
+        dMeter_PaneShow(&i_Meter->field_0x1f30[i_itemBtn]);
+        dMeter_PaneShow(&i_Meter->field_0x1fd8[i_itemBtn]);
         if (dComIfGs_getBombNum() < 10) {
-            dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
+            dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
         } else {
-            dMeter_numberSet(i_Meter->field_0x1f30[param_2].pane, dComIfGs_getBombNum() / 10);
-            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[param_2].pane, dComIfGs_getBombNum(), dComIfGs_getBombMax());
+            dMeter_numberSet(i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getBombNum() / 10);
+            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getBombNum(), dComIfGs_getBombMax());
         }
-        dMeter_numberSet(i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBombNum() % 10);
-        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBombNum(), dComIfGs_getBombMax());
-    } else {
-        if ((dComIfGs_getSelectItem(param_2) >= dInvSlot_BeastFirst_e) && (dComIfGs_getSelectItem(param_2) <= dInvSlot_BeastLast_e - 1)) {
-            dMeter_PaneShow(&i_Meter->field_0x1f30[param_2]);
-            dMeter_PaneShow(&i_Meter->field_0x1fd8[param_2]);
-            int iVar3 = dMeter_xyEquipItem(param_2);
-            if (dComIfGs_getBeastNum(iVar3) < 10) {
-                dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
-            } else {
-                dMeter_numberSet(i_Meter->field_0x1f30[param_2].pane, dComIfGs_getBeastNum(iVar3) / 10);
-                dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[param_2].pane, dComIfGs_getBeastNum(iVar3), 99);
-            }
-            dMeter_numberSet(i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBeastNum(iVar3) % 10);
-            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBeastNum(iVar3), 99);
+        dMeter_numberSet(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBombNum() % 10);
+        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBombNum(), dComIfGs_getBombMax());
+    } else if ((dComIfGs_getSelectItem(i_itemBtn) >= dInvSlot_BeastFirst_e) && (dComIfGs_getSelectItem(i_itemBtn) <= dInvSlot_BeastLast_e - 1)) {
+        dMeter_PaneShow(&i_Meter->field_0x1f30[i_itemBtn]);
+        dMeter_PaneShow(&i_Meter->field_0x1fd8[i_itemBtn]);
+        int beastIdx = dMeter_xyEquipItem(i_itemBtn);
+        if (dComIfGs_getBeastNum(beastIdx) < 10) {
+            dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
         } else {
-            if ((dComIfGs_getSelectItem(param_2) >= dInvSlot_BaitFirst_e) && (dComIfGs_getSelectItem(param_2) <= dInvSlot_BaitLast_e - 1)) {
-                if (dComIfGp_getSelectItem(param_2) == dItem_HYOI_PEAR_e) {
-                    dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
-                    dMeter_PaneHide(&i_Meter->field_0x1fd8[param_2]);
-                } else {
-                    dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
-                    dMeter_PaneShow(&i_Meter->field_0x1fd8[param_2]);
-                    dMeter_numberSet(i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBaitNum(dComIfGs_getSelectItem(param_2) - dInvSlot_BaitFirst_e));
-                    dMeter_numberColor(
-                        (J2DPicture*)i_Meter->field_0x1fd8[param_2].pane, dComIfGs_getBaitNum(dComIfGs_getSelectItem(param_2) - dInvSlot_BaitFirst_e), 3
-                    );
-                }
+            dMeter_numberSet(i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getBeastNum(beastIdx) / 10);
+            dMeter_numberColor((J2DPicture*)i_Meter->field_0x1f30[i_itemBtn].pane, dComIfGs_getBeastNum(beastIdx), 99);
+        }
+        dMeter_numberSet(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBeastNum(beastIdx) % 10);
+        dMeter_numberColor((J2DPicture*)i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBeastNum(beastIdx), 99);
+    } else {
+        if ((dComIfGs_getSelectItem(i_itemBtn) >= dInvSlot_BaitFirst_e) && (dComIfGs_getSelectItem(i_itemBtn) <= dInvSlot_BaitLast_e - 1)) {
+            if (dComIfGp_getSelectItem(i_itemBtn) == dItem_HYOI_PEAR_e) {
+                dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
+                dMeter_PaneHide(&i_Meter->field_0x1fd8[i_itemBtn]);
             } else {
-                dMeter_PaneHide(&i_Meter->field_0x1f30[param_2]);
-                dMeter_PaneHide(&i_Meter->field_0x1fd8[param_2]);
+                dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
+                dMeter_PaneShow(&i_Meter->field_0x1fd8[i_itemBtn]);
+                dMeter_numberSet(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBaitNum(dComIfGs_getSelectItem(i_itemBtn) - dInvSlot_BaitFirst_e));
+                dMeter_numberColor(i_Meter->field_0x1fd8[i_itemBtn].pane, dComIfGs_getBaitNum(dComIfGs_getSelectItem(i_itemBtn) - dInvSlot_BaitFirst_e), 3);
             }
+        } else {
+            dMeter_PaneHide(&i_Meter->field_0x1f30[i_itemBtn]);
+            dMeter_PaneHide(&i_Meter->field_0x1fd8[i_itemBtn]);
         }
     }
 }
@@ -2762,7 +2739,6 @@ void dMeter_xyItemCountUp(sub_meter_class* i_Meter) {
     bool bVar3;
     s16 sVar4;
     s16 uVar5;
-    s32 uVar8;
 
     bVar3 = false;
     static u8 arrowMax = dComIfGs_getArrowMax();
@@ -2814,97 +2790,97 @@ void dMeter_xyItemCountUp(sub_meter_class* i_Meter) {
         bombMax = dComIfGs_getBombMax();
         bVar3 = 1;
     }
-    for (s32 i = 0; i < 8; i++) {
-        if (dComIfGp_getItemBeastNumCount(i) != 0) {
-            sVar4 = dComIfGs_getBeastNum(i) + dComIfGp_getItemBeastNumCount(i);
-            dComIfGp_clearItemBeastNumCount(i);
+    for (int beastIdx = 0; beastIdx < dBeastIdx_COUNT_e; beastIdx++) {
+        if (dComIfGp_getItemBeastNumCount(beastIdx) != 0) {
+            sVar4 = dComIfGs_getBeastNum(beastIdx) + dComIfGp_getItemBeastNumCount(beastIdx);
+            dComIfGp_clearItemBeastNumCount(beastIdx);
             if (sVar4 <= 0) {
-                dComIfGs_setBeastNum(i, 0);
-                for (s32 j = 0; j < 3; j++) {
-                    if (dComIfGp_getSelectItem(j) == fopMsgM_itemNumIdx(i + 0x18)) {
-                        dMeter_PaneHide(&i_Meter->field_0x2080[j]);
-                        dMeter_PaneHide(&i_Meter->field_0x2128[j]);
-                        dMeter_PaneHide(&i_Meter->field_0x1f30[j]);
-                        dMeter_PaneHide(&i_Meter->field_0x1fd8[j]);
+                dComIfGs_setBeastNum(beastIdx, 0);
+                for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+                    if (dComIfGp_getSelectItem(itemBtn) == fopMsgM_itemNumIdx(beastIdx + dInvSlot_BeastFirst_e)) {
+                        dMeter_PaneHide(&i_Meter->field_0x2080[itemBtn]);
+                        dMeter_PaneHide(&i_Meter->field_0x2128[itemBtn]);
+                        dMeter_PaneHide(&i_Meter->field_0x1f30[itemBtn]);
+                        dMeter_PaneHide(&i_Meter->field_0x1fd8[itemBtn]);
                     }
                 }
-                uVar8 = fopMsgM_itemNumIdx(i + 0x18);
-                dComIfGs_setBeastItemEmpty(uVar8);
+                int itemNo = fopMsgM_itemNumIdx(beastIdx + dInvSlot_BeastFirst_e);
+                dComIfGs_setBeastItemEmpty(itemNo);
                 bVar3 = true;
             } else {
                 if (sVar4 > 99) {
                     sVar4 = 99;
                 }
-                dComIfGs_setBeastNum(i, sVar4);
+                dComIfGs_setBeastNum(beastIdx, sVar4);
                 bVar3 = true;
             }
         }
-        if (dMenu_baitNum[i] != dComIfGs_getBaitNum(i)) {
-            dMenu_baitNum[i] = dComIfGs_getBaitNum(i);
+        if (dMenu_baitNum[beastIdx] != dComIfGs_getBaitNum(beastIdx)) {
+            dMenu_baitNum[beastIdx] = dComIfGs_getBaitNum(beastIdx);
             bVar3 = true;
         }
     }
 #if VERSION > VERSION_DEMO
-    for (s32 i = 0; i < 3; i++) {
-        if (dComIfGp_getSelectItem(i) == dItem_BIRD_BAIT_5_e) {
+    for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+        if (dComIfGp_getSelectItem(itemBtn) == dItem_BIRD_BAIT_5_e) {
             bVar3 = true;
         }
     }
 #endif
     if (bVar3) {
-        for (s32 i = 0; i < 3; i++) {
-            dMeter_xyItemNumberSet(i_Meter, i);
+        for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+            dMeter_xyItemNumberSet(i_Meter, itemBtn);
         }
     }
 }
 
 /* 801F5C98-801F5FDC       .text dMeter_xyItemChange__FP15sub_meter_classi */
-void dMeter_xyItemChange(sub_meter_class* i_Meter, int param_2) {
+void dMeter_xyItemChange(sub_meter_class* i_Meter, int i_itemBtn) {
     JKRArchive* pArc;
     const char* pFilename;
 
-    if (dComIfGp_getSelectItem(param_2) != dItem_NONE_e) {
-        if (dComIfGs_getSelectItem(param_2) >= dInvSlot_ReserveFirst_e) {
-            dMeter_PaneShow(&i_Meter->field_0x2080[param_2]);
-            dMeter_PaneShow(&i_Meter->field_0x2128[param_2]);
+    if (dComIfGp_getSelectItem(i_itemBtn) != dItem_NONE_e) {
+        if (dComIfGs_getSelectItem(i_itemBtn) >= dInvSlot_ReserveFirst_e) {
+            dMeter_PaneShow(&i_Meter->field_0x2080[i_itemBtn]);
+            dMeter_PaneShow(&i_Meter->field_0x2128[i_itemBtn]);
             pArc = dComIfGp_getItemIconArchive();
-            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(param_2));
-            JKRArchive::readTypeResource(i_Meter->xyIconTex[param_2], 0xc00, 'TIMG', pFilename, pArc);
-            DCStoreRangeNoSync(i_Meter->xyIconTex[param_2], 0xc00);
-            ((J2DPicture*)i_Meter->field_0x2080[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-            ((J2DPicture*)i_Meter->field_0x2128[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-        } else if (dComIfGs_getSelectItem(param_2) >= dInvSlot_BaitFirst_e) {
-            dMeter_PaneShow(&i_Meter->field_0x2080[param_2]);
-            dMeter_PaneShow(&i_Meter->field_0x2128[param_2]);
+            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(i_itemBtn));
+            JKRArchive::readTypeResource(i_Meter->xyIconTex[i_itemBtn], 0xc00, 'TIMG', pFilename, pArc);
+            DCStoreRangeNoSync(i_Meter->xyIconTex[i_itemBtn], 0xc00);
+            ((J2DPicture*)i_Meter->field_0x2080[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+            ((J2DPicture*)i_Meter->field_0x2128[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+        } else if (dComIfGs_getSelectItem(i_itemBtn) >= dInvSlot_BaitFirst_e) {
+            dMeter_PaneShow(&i_Meter->field_0x2080[i_itemBtn]);
+            dMeter_PaneShow(&i_Meter->field_0x2128[i_itemBtn]);
             pArc = dComIfGp_getItemIconArchive();
-            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(param_2));
-            JKRArchive::readTypeResource(i_Meter->xyIconTex[param_2], 0xc00, 'TIMG', pFilename, pArc);
-            DCStoreRangeNoSync(i_Meter->xyIconTex[param_2], 0xc00);
-            ((J2DPicture*)i_Meter->field_0x2080[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-            ((J2DPicture*)i_Meter->field_0x2128[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-        } else if (dComIfGs_getSelectItem(param_2) >= dInvSlot_BeastFirst_e) {
-            dMeter_PaneShow(&i_Meter->field_0x2080[param_2]);
-            dMeter_PaneShow(&i_Meter->field_0x2128[param_2]);
+            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(i_itemBtn));
+            JKRArchive::readTypeResource(i_Meter->xyIconTex[i_itemBtn], 0xc00, 'TIMG', pFilename, pArc);
+            DCStoreRangeNoSync(i_Meter->xyIconTex[i_itemBtn], 0xc00);
+            ((J2DPicture*)i_Meter->field_0x2080[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+            ((J2DPicture*)i_Meter->field_0x2128[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+        } else if (dComIfGs_getSelectItem(i_itemBtn) >= dInvSlot_BeastFirst_e) {
+            dMeter_PaneShow(&i_Meter->field_0x2080[i_itemBtn]);
+            dMeter_PaneShow(&i_Meter->field_0x2128[i_itemBtn]);
             pArc = dComIfGp_getItemIconArchive();
-            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(param_2));
-            JKRArchive::readTypeResource(i_Meter->xyIconTex[param_2], 0xc00, 'TIMG', pFilename, pArc);
-            DCStoreRangeNoSync(i_Meter->xyIconTex[param_2], 0xc00);
-            ((J2DPicture*)i_Meter->field_0x2080[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-            ((J2DPicture*)i_Meter->field_0x2128[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
+            pFilename = dItem_data::getTexture(dComIfGp_getSelectItem(i_itemBtn));
+            JKRArchive::readTypeResource(i_Meter->xyIconTex[i_itemBtn], 0xc00, 'TIMG', pFilename, pArc);
+            DCStoreRangeNoSync(i_Meter->xyIconTex[i_itemBtn], 0xc00);
+            ((J2DPicture*)i_Meter->field_0x2080[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+            ((J2DPicture*)i_Meter->field_0x2128[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
         } else {
-            dMeter_PaneShow(&i_Meter->field_0x2080[param_2]);
-            dMeter_PaneShow(&i_Meter->field_0x2128[param_2]);
-            u8 uVar2 = dComIfGp_getSelectItem(param_2);
+            dMeter_PaneShow(&i_Meter->field_0x2080[i_itemBtn]);
+            dMeter_PaneShow(&i_Meter->field_0x2128[i_itemBtn]);
+            u8 uVar2 = dComIfGp_getSelectItem(i_itemBtn);
             u8 var_r4 = uVar2;
             if (uVar2 == dItem_MAGIC_ARROW_e) {
-                i_Meter->field_0x2320[param_2].pane->show();
-                i_Meter->field_0x23c8[param_2].pane->show();
-                i_Meter->field_0x2470[param_2].pane->hide();
+                i_Meter->field_0x2320[i_itemBtn].pane->show();
+                i_Meter->field_0x23c8[i_itemBtn].pane->show();
+                i_Meter->field_0x2470[i_itemBtn].pane->hide();
                 var_r4 = dItem_BOW_e;
             } else if (uVar2 == dItem_LIGHT_ARROW_e) {
-                i_Meter->field_0x2320[param_2].pane->show();
-                i_Meter->field_0x23c8[param_2].pane->show();
-                i_Meter->field_0x2470[param_2].pane->show();
+                i_Meter->field_0x2320[i_itemBtn].pane->show();
+                i_Meter->field_0x23c8[i_itemBtn].pane->show();
+                i_Meter->field_0x2470[i_itemBtn].pane->show();
                 var_r4 = dItem_BOW_e;
             }
             if ((var_r4 == dItem_MAGIC_ARROW_e) || (var_r4 == dItem_LIGHT_ARROW_e)) {
@@ -2912,16 +2888,16 @@ void dMeter_xyItemChange(sub_meter_class* i_Meter, int param_2) {
             }
             pArc = dComIfGp_getItemIconArchive();
             pFilename = dItem_data::getTexture(var_r4);
-            JKRArchive::readTypeResource(i_Meter->xyIconTex[param_2], 0xc00, 'TIMG', pFilename, pArc);
-            DCStoreRangeNoSync(i_Meter->xyIconTex[param_2], 0xc00);
-            ((J2DPicture*)i_Meter->field_0x2080[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
-            ((J2DPicture*)i_Meter->field_0x2128[param_2].pane)->changeTexture(i_Meter->xyIconTex[param_2], 0);
+            JKRArchive::readTypeResource(i_Meter->xyIconTex[i_itemBtn], 0xc00, 'TIMG', pFilename, pArc);
+            DCStoreRangeNoSync(i_Meter->xyIconTex[i_itemBtn], 0xc00);
+            ((J2DPicture*)i_Meter->field_0x2080[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
+            ((J2DPicture*)i_Meter->field_0x2128[i_itemBtn].pane)->changeTexture(i_Meter->xyIconTex[i_itemBtn], 0);
         }
     } else {
-        dMeter_PaneHide(&i_Meter->field_0x2080[param_2]);
-        dMeter_PaneHide(&i_Meter->field_0x2128[param_2]);
+        dMeter_PaneHide(&i_Meter->field_0x2080[i_itemBtn]);
+        dMeter_PaneHide(&i_Meter->field_0x2128[i_itemBtn]);
     }
-    dMeter_xyItemNumberSet(i_Meter, param_2);
+    dMeter_xyItemNumberSet(i_Meter, i_itemBtn);
 }
 
 /* 801F5FDC-801F6084       .text dMeter_xyRotateZ__FP18fopMsgM_pane_classff */
@@ -2990,13 +2966,13 @@ void dMeter_xyAlpha(sub_meter_class* i_Meter) {
                         }
                     }
                 } else {
-                    for (s32 i = 0; i < 3; i++) {
-                        if (((i_Meter->mStatusFlags & dMtrStts_UNK1000_e) && (dComIfGp_getSelectItem(i) != dItem_GRAPPLING_HOOK_e)) ||
-                            ((i_Meter->mStatusFlags & dMtrStts_UNK80_e) && (dComIfGp_getSelectItem(i) != dItem_TELESCOPE_e)) ||
+                    for (int itemBtn = 0; itemBtn < dItemBtn_COUNT_e; itemBtn++) {
+                        if (((i_Meter->mStatusFlags & dMtrStts_UNK1000_e) && (dComIfGp_getSelectItem(itemBtn) != dItem_GRAPPLING_HOOK_e)) ||
+                            ((i_Meter->mStatusFlags & dMtrStts_UNK80_e) && (dComIfGp_getSelectItem(itemBtn) != dItem_TELESCOPE_e)) ||
                             ((i_Meter->mStatusFlags & dMtrStts_UNK20000_e) &&
-                             ((dVar2 = dComIfGp_getSelectItem(i), ((dVar2 == CAMERA) == 0)) || (dVar2 != CAMERA2))) ||
+                             ((dVar2 = dComIfGp_getSelectItem(itemBtn), ((dVar2 == CAMERA) == 0)) || (dVar2 != CAMERA2))) ||
                             ((i_Meter->mStatusFlags & dMtrStts_UNK400_e) && (dComIfGp_getMiniGameType() != 1) &&
-                             (dVar2 = dComIfGp_getSelectItem(i), ((dVar2 == NORMAL_SAIL) == 0)) && (dVar2 != dItem_TELESCOPE_e) &&
+                             (dVar2 = dComIfGp_getSelectItem(itemBtn), ((dVar2 == NORMAL_SAIL) == 0)) && (dVar2 != dItem_TELESCOPE_e) &&
                              (dVar2 != dItem_WIND_WAKER_e) && (dVar2 != dItem_GRAPPLING_HOOK_e) && (dVar2 != dItem_BOOMERANG_e) &&
                              (dVar2 != dItem_TINGLE_TUNER_e) && (dVar2 != CAMERA) && (dVar2 != CAMERA2) && (dVar2 != dItem_MAGIC_ARMOR_e) &&
                              (dVar2 != dItem_BAIT_BAG_e) && (dVar2 != dItem_HYOI_PEAR_e) && (dVar2 != dItem_BIRD_BAIT_5_e) && (dVar2 != dItem_BOW_e) &&
@@ -3005,19 +2981,19 @@ void dMeter_xyAlpha(sub_meter_class* i_Meter) {
                              (dVar2 != dItem_BLUE_POTION_e) && (dVar2 != dItem_HALF_SOUP_BOTTLE_e) && (dVar2 != dItem_SOUP_BOTTLE_e) &&
                              (dVar2 != dItem_WATER_BOTTLE_e) && (dVar2 != dItem_FAIRY_BOTTLE_e) && (dVar2 != dItem_FIREFLY_BOTTLE_e) &&
                              (dVar2 != dItem_FOREST_WATER_e)) ||
-                            ((dComIfGp_getMiniGameType() == 1) && (dVar2 = dComIfGp_getSelectItem(i), ((dVar2 == NORMAL_SAIL) == 0)) &&
+                            ((dComIfGp_getMiniGameType() == 1) && (dVar2 = dComIfGp_getSelectItem(itemBtn), ((dVar2 == NORMAL_SAIL) == 0)) &&
                              (dVar2 != dItem_TELESCOPE_e)) ||
                             ((dStage_stagInfo_GetSTType(dComIfGp_getStageStagInfo()) == dStageType_BOSS_e) &&
                              ((strcmp(dComIfGp_getStartStageName(), "Xboss0") == 0) || (strcmp(dComIfGp_getStartStageName(), "Xboss1") == 0) ||
                               (strcmp(dComIfGp_getStartStageName(), "Xboss2") == 0) || (strcmp(dComIfGp_getStartStageName(), "Xboss3") == 0)) &&
-                             ((dVar2 = dComIfGp_getSelectItem(i), (dVar2 == dItem_WATER_BOTTLE_e)) || ((u8)dVar2 == dItem_FIREFLY_BOTTLE_e) ||
+                             ((dVar2 = dComIfGp_getSelectItem(itemBtn), (dVar2 == dItem_WATER_BOTTLE_e)) || ((u8)dVar2 == dItem_FIREFLY_BOTTLE_e) ||
                               (dVar2 == dItem_FOREST_WATER_e))) ||
-                            ((i_Meter->mStatusFlags & dMtrStts_UNK2_e) && (dVar2 = dComIfGp_getSelectItem(i), (dVar2 == dItem_TINGLE_TUNER_e) == 0) &&
+                            ((i_Meter->mStatusFlags & dMtrStts_UNK2_e) && (dVar2 = dComIfGp_getSelectItem(itemBtn), (dVar2 == dItem_TINGLE_TUNER_e) == 0) &&
                              ((dVar2 != dItem_WIND_WAKER_e) || (strcmp(dComIfGp_getStartStageName(), "Otkura") != 0)) &&
-                             ((dComIfGp_getSelectItem(i) != dItem_GRAPPLING_HOOK_e) || (strcmp(dComIfGp_getStartStageName(), "Abesso") != 0)) &&
-                             (dVar2 = dComIfGp_getSelectItem(i), ((dVar2 == CAMERA) == 0)) && (dVar2 != CAMERA2) && (dVar2 != dItem_SPOILS_BAG_e) &&
+                             ((dComIfGp_getSelectItem(itemBtn) != dItem_GRAPPLING_HOOK_e) || (strcmp(dComIfGp_getStartStageName(), "Abesso") != 0)) &&
+                             (dVar2 = dComIfGp_getSelectItem(itemBtn), ((dVar2 == CAMERA) == 0)) && (dVar2 != CAMERA2) && (dVar2 != dItem_SPOILS_BAG_e) &&
                              (dVar2 != dItem_SKULL_NECKLACE_e) && (dVar2 != dItem_BOKOBABA_SEED_e) && (dVar2 != dItem_GOLDEN_FEATHER_e) &&
-                             (dVar2 != BOKO_BELT) && (dVar2 != dItem_RED_JELLY_e) && (dVar2 != dItem_GREEN_JELLY_e) && (dVar2 != dItem_BLUE_JELLY_e) &&
+                             (dVar2 != dItem_KNIGHTS_CREST_e) && (dVar2 != dItem_RED_JELLY_e) && (dVar2 != dItem_GREEN_JELLY_e) && (dVar2 != dItem_BLUE_JELLY_e) &&
                              (dVar2 != dItem_JOY_PENDANT_e) && (dVar2 != dItem_BAIT_BAG_e) && (dVar2 != dItem_BIRD_BAIT_5_e) && (dVar2 != dItem_HYOI_PEAR_e) &&
                              (dVar2 != dItem_EMPTY_BOTTLE_e) && (dVar2 != dItem_RED_POTION_e) && (dVar2 != dItem_GREEN_POTION_e) &&
                              (dVar2 != dItem_BLUE_POTION_e) && (dVar2 != dItem_HALF_SOUP_BOTTLE_e) && (dVar2 != dItem_SOUP_BOTTLE_e) &&
@@ -3028,22 +3004,20 @@ void dMeter_xyAlpha(sub_meter_class* i_Meter) {
                              (dVar2 != PRESIDENT_STATUE) && (dVar2 != dItem_FATHER_LETTER_e) && (dVar2 != dItem_NOTE_TO_MOM_e) && (dVar2 != MAGYS_LETTER) &&
                              (dVar2 != MO_LETTER) && (dVar2 != COTTAGE_PAPER) && (dVar2 != KAISEN_PRESENT1) && (dVar2 != KAISEN_PRESENT2)))
                         {
-                            if (alphaNowFrame[i] > 3) {
-                                alphaNowFrame[i]--;
+                            if (alphaNowFrame[itemBtn] > 3) {
+                                alphaNowFrame[itemBtn]--;
+                            } else if (alphaNowFrame[itemBtn] < 3) {
+                                alphaNowFrame[itemBtn]++;
                             } else {
-                                if (alphaNowFrame[i] < 3) {
-                                    alphaNowFrame[i]++;
-                                } else {
-                                    alphaNowFrame[i] = 3;
-                                }
+                                alphaNowFrame[itemBtn] = 3;
                             }
                         } else {
-                            if (alphaNowFrame[i] < 5) {
-                                alphaNowFrame[i]++;
+                            if (alphaNowFrame[itemBtn] < 5) {
+                                alphaNowFrame[itemBtn]++;
                             } else {
-                                alphaNowFrame[i] = 5;
+                                alphaNowFrame[itemBtn] = 5;
                             }
-                            switch (i) {
+                            switch (itemBtn) {
                             case 0:
                                 i_Meter->field_0x3024 |= 4;
                                 break;

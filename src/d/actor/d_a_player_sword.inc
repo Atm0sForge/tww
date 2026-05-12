@@ -1532,7 +1532,7 @@ BOOL daPy_lk_c::procCutRoll_init() {
     mAtCyl.SetR(m35A4 * 0.5f);
     m34D0 = m_HIO->mCut.mCutRoll.m.field_0x2;
     current.angle.y = shape_angle.y;
-    m34BE = 4;
+    setFootEffectPosType(4);
     dComIfGp_setPlayerStatus0(0, daPyStts0_SPIN_ATTACK_e);
     endFlameDamageEmitter();
     return true;
@@ -1964,7 +1964,7 @@ BOOL daPy_lk_c::procJumpCutLand_init() {
     }
     m34D0 = m_HIO->mCut.mCutJump.m.field_0x4;
     current.angle.y = shape_angle.y + 0x8000;
-    m34BE = 3;
+    setFootEffectPosType(3);
     onResetFlg0(daPyRFlg0_RIGHT_FOOT_ON_GROUND);
     onResetFlg0(daPyRFlg0_LEFT_FOOT_ON_GROUND);
     if (mEquipItem == dItem_SKULL_HAMMER_e) {

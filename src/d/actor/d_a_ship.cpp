@@ -1797,9 +1797,9 @@ BOOL daShip_c::procCannon() {
         }
         
         if (m037A == 0 && 
-            ((CPad_CHECK_TRIG_X(0) && dComIfGp_getSelectItem(0) == dItem_BOMB_BAG_e) ||
-             (CPad_CHECK_TRIG_Y(0) && dComIfGp_getSelectItem(1) == dItem_BOMB_BAG_e) ||
-             (CPad_CHECK_TRIG_Z(0) && dComIfGp_getSelectItem(2) == dItem_BOMB_BAG_e))) {
+            ((CPad_CHECK_TRIG_X(0) && dComIfGp_getSelectItem(dItemBtn_X_e) == dItem_BOMB_BAG_e) ||
+             (CPad_CHECK_TRIG_Y(0) && dComIfGp_getSelectItem(dItemBtn_Y_e) == dItem_BOMB_BAG_e) ||
+             (CPad_CHECK_TRIG_Z(0) && dComIfGp_getSelectItem(dItemBtn_Z_e) == dItem_BOMB_BAG_e))) {
             m037A = 30;
             if (dComIfGs_getBombNum() == 0) {
                 mDoAud_seStart(JA_SE_ITEM_TARGET_OUT);
@@ -1895,9 +1895,9 @@ BOOL daShip_c::procCrane() {
     if (!dComIfGp_event_runCheck() && !daPy_getPlayerLinkActorClass()->checkNoControll()) {
         if (m0398 == mCraneBaseAngle) {
             if(std::fabsf(speedF) < 3.0f &&
-              ((CPad_CHECK_HOLD_X(0) && dComIfGp_getSelectItem(0) == dItem_GRAPPLING_HOOK_e) ||
-               (CPad_CHECK_HOLD_Y(0) && dComIfGp_getSelectItem(1) == dItem_GRAPPLING_HOOK_e) ||
-               (CPad_CHECK_HOLD_Z(0) && dComIfGp_getSelectItem(2) == dItem_GRAPPLING_HOOK_e))) {
+              ((CPad_CHECK_HOLD_X(0) && dComIfGp_getSelectItem(dItemBtn_X_e) == dItem_GRAPPLING_HOOK_e) ||
+               (CPad_CHECK_HOLD_Y(0) && dComIfGp_getSelectItem(dItemBtn_Y_e) == dItem_GRAPPLING_HOOK_e) ||
+               (CPad_CHECK_HOLD_Z(0) && dComIfGp_getSelectItem(dItemBtn_Z_e) == dItem_GRAPPLING_HOOK_e))) {
                 sVar1 = mRopeCnt;
                 incRopeCnt(2, 0);
                 if (mRopeCnt == 250) {

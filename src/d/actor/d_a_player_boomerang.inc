@@ -50,7 +50,7 @@ void daPy_lk_c::throwBoomerang() {
 BOOL daPy_lk_c::returnBoomerang() {
     dComIfGp_clearPlayerStatus0(0, daPyStts0_BOOMERANG_WAIT_e);
 
-    if (mEquipItem == daPyItem_NONE_e && !checkNoControll() && !dComIfGp_event_runCheck() && mDemo.getDemoType() == 0 &&
+    if (mEquipItem == daPyItem_NONE_e && !checkNoControll() && !dComIfGp_event_runCheck() && !checkPlayerDemoMode() &&
         (checkNoUpperAnime() || checkPlayerGuard() || checkDashDamageAnime() || checkBoomerangAnime()) &&
         (!checkModeFlg(
              // These combine to: 0x01FD2810
@@ -113,7 +113,7 @@ BOOL daPy_lk_c::checkNextBoomerangMode() {
 /* 80149964-80149A44       .text changeBoomerangCatchProc__9daPy_lk_cFv */
 BOOL daPy_lk_c::changeBoomerangCatchProc() {
     if (checkNoResetFlg0(daPyFlg0_UNK20)) {
-        if (!dComIfGp_event_runCheck() && mDemo.getDemoType() == 0 && checkModeFlg(ModeFlg_00020000) &&
+        if (!dComIfGp_event_runCheck() && !checkPlayerDemoMode() && checkModeFlg(ModeFlg_00020000) &&
             (checkNoUpperAnime() || checkBoomerangThrowAnime()))
         {
             setActAnimeUpper(

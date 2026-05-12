@@ -241,13 +241,13 @@ void daPy_lk_c::setDoStatusCrawl() {
     dComIfGp_setRStatus(dActStts_CROUCH_e);
     if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x80)) {
         dComIfGp_setAStatus(dActStts_RETURN_e);
-        if (checkSubjectEnd(1) || m35D0 > current.pos.y) {
+        if (checkSubjectEnd(1) || mWaterY > current.pos.y) {
             dComIfGp_clearPlayerStatus0(0, daPyStts0_UNK2000_e);
         } else {
             dComIfGp_setPlayerStatus0(0, daPyStts0_UNK2000_e);
         }
     } else if (dCam_getBody()->ChangeModeOK(4)) {
-        if (m35D0 <= current.pos.y) {
+        if (mWaterY <= current.pos.y) {
             onResetFlg0(daPyRFlg0_SUBJECT_ACCEPT);
             if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x1000) && !dComIfGp_event_runCheck()) {
                 setSubjectMode();
@@ -297,7 +297,7 @@ BOOL daPy_lk_c::procCrawlStart() {
     local_20.y = 50.0f;
     mDoMtx_multVec(mpCLModel->getBaseTRMtx(), &local_20, &cStack_38);
     crawlBgCheck(&cStack_38, &cStack_38);
-    if (!spActionButton() || m35D0 > 15.0f + current.pos.y) {
+    if (!spActionButton() || checkCrawlWaterIn()) {
         procCrawlEnd_init(0, shape_angle.x, shape_angle.z);
     } else if (mStickDistance > 0.05f &&
                ((mFrameCtrlUnder[UNDER_MOVE0_e].getRate() < 0.01f) ||
@@ -410,7 +410,7 @@ BOOL daPy_lk_c::procCrawlMove() {
         bVar5 = true;
         offModeFlg(ModeFlg_04000000);
     }
-    if ((bVar5 != false && !spActionButton()) || (getSlidePolygon() != NULL || m35D0 > current.pos.y + 15.0f)) {
+    if ((bVar5 != false && !spActionButton()) || getSlidePolygon() != NULL || checkCrawlWaterIn()) {
         procCrawlEnd_init(1, shape_angle.x, shape_angle.z);
     } else {
         bVar4 = false;

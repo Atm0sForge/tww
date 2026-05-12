@@ -27,7 +27,7 @@
 /* 8013F848-8013F8AC       .text shipSpecialDemoStart__9daPy_lk_cFv */
 BOOL daPy_lk_c::shipSpecialDemoStart() {
     if (dComIfGp_event_compulsory(this)) {
-        mDemo.setDemoType(5);
+        mDemo.setSpecialDemoType();
         return true;
     } else {
         return false;
@@ -731,7 +731,7 @@ BOOL daPy_lk_c::procShipScope() {
     if (checkScopeEnd()) {
         procShipPaddle_init();
     } else if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x10) && !dComIfGp_event_runCheck() &&
-               mDemo.getDemoType() == 0)
+               !checkPlayerDemoMode())
     {
         shape_angle.y = fopCamM_GetAngleY(dComIfGp_getCamera(mCameraInfoIdx));
         iVar2 = 0;

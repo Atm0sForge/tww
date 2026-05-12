@@ -1857,20 +1857,27 @@ public:
     cXyz getBoomerangCatchPos() const { return mBoomerangCatchPos; }
     cXyz getLineTopPos() { return mSightPacket.getPos(); }
     cXyz getHookshotRootPos() const { return mHookshotRootPos; }
-    void getIceParticleBtk() {}
-    void getIceWaterParticleBtk() {}
     void getShadowID() const {}
     void npcStartRestartRoom() { startRestartRoom(5, 0xC9, -1.0f, 0); }
-    void setDaiokutaEnd() {}
+    void setDaiokutaEnd() { startRestartRoom(6, 0xC9, -1.0f, 1); }
     void setWhirlId(fpc_ProcID id) { mWhirlId = id; }
     void decrementBombCnt() {
         if (mActivePlayerBombs != 0) {
             mActivePlayerBombs--;
         }
     }
+    
+    J3DAnmTextureSRTKey* getIceParticleBtk() { return mpGicer00Btk; }
+    J3DAnmTextureSRTKey* getIceWaterParticleBtk() { return mpGicer01Btk; }
+    void getBombWaterPillarBrk() {} // mpGwp00BrkData?
+    void getBombWaterPillarBtk() {} // mpGwp00BtkData?
+    
     BOOL checkSwordEquip() const {
         return dComIfGs_getSelectEquip(0) != dItem_NONE_e || checkSwordMiniGame();
     }
+    BOOL checkShieldEquip() const { return dComIfGs_getSelectEquip(1) != dItem_NONE_e; }
+    BOOL checkMirrorShieldEquip() const { return dComIfGs_getSelectEquip(1) == dItem_MIRROR_SHIELD_e; }
+    BOOL checkPowerGloveEquip() const { return dComIfGs_getSelectEquip(2) == dItem_POWER_BRACELETS_e; }
     
     int getStartRoomNo() { return fopAcM_GetParam(this) & 0x3F; }
     int getStartMode() { return (fopAcM_GetParam(this) >> 0x0C) & 0xF; }
@@ -1907,30 +1914,29 @@ public:
     BOOL allTrigger() const { return mItemTrigger & (BTN_A | BTN_B | BTN_X | BTN_Y | BTN_Z); }
     void otherWeaponTrigger() const {}
     
-    BOOL checkPlayerDemoMode() const { return mDemo.getDemoType() != 0; }
-    void checkSpecialDemoMode() const {}
+    BOOL checkPlayerDemoMode() const { return mDemo.getDemoType() != daPy_demo_c::TYPE_NONE_e; }
+    BOOL checkSpecialDemoMode() const { return mDemo.getDemoType() == daPy_demo_c::TYPE_SPECIAL_e; }
     
     f32 getAnmSpeedStickRate(f32 param_0, f32 param_1) {
         return param_0 + (mStickDistance * (param_1 - param_0));
     }
     void seStartSystem(u32 i_seNum) { mDoAud_seStart(i_seNum); }
     BOOL checkAttentionLock() { return mpAttention->Lockon(); }
-    void checkBoomerangRock() {}
+    BOOL checkBoomerangRock() {
+        return (mCurProc == daPy_lk_c::daPyProc_BOOMERANG_SUBJECT_e ||
+                mCurProc == daPy_lk_c::daPyProc_SHIP_BOOMERANG_e) &&
+            mSightPacket.getDrawFlg();
+    }
+    BOOL checkFaceTypeNot() const { return mFace == daPyFace_NONE; }
+    BOOL checkCrawlWaterIn() { return mWaterY > current.pos.y + 15.0f; }
+    void setFootEffectPosType(u8 type) { mFootEffectPosType = type; }
     
     void checkBothItemEquipAnime() const {}
-    void checkCrawlWaterIn() {}
     void checkDoubleItemEquipAnime() const {}
-    void checkFaceTypeNot() const {}
     void checkIsland() const {}
-    void checkMirrorShieldEquip() const {}
-    void checkPowerGloveEquip() const {}
     void checkRopeThrowAnime() const {}
-    void checkShieldEquip() const {}
     void checkSwordEquipAnime() const {}
-    void getBombWaterPillarBrk() {} // mpGwp00BrkData?
-    void getBombWaterPillarBtk() {} // mpGwp00BtkData?
     void getTactLeftHandPos() const {}
-    void setFootEffectPosType(u8) {}
     void setSpeedAndAngleBoomerang() {}
     void setSpeedAndAngleBow() {}
     void setSpeedAndAngleHookshot() {}
@@ -2133,7 +2139,7 @@ public:
     /* 0x34BB */ u8 mCurrItemHeapIdx;
     /* 0x34BC */ u8 m34BC;
     /* 0x34BD */ u8 mReadyItemBtn; // Which of the three item buttons the player last used.
-    /* 0x34BE */ u8 m34BE;
+    /* 0x34BE */ u8 mFootEffectPosType;
     /* 0x34BF */ s8 mReverb;
     /* 0x34C0 */ u8 mLeftHandIdx;
     /* 0x34C1 */ u8 mRightHandIdx;
@@ -2258,7 +2264,7 @@ public:
     /* 0x35C4 */ f32 m35C4;
     /* 0x35C8 */ f32 m35C8;
     /* 0x35CC */ f32 m35CC;
-    /* 0x35D0 */ f32 m35D0;
+    /* 0x35D0 */ f32 mWaterY;
     /* 0x35D4 */ f32 m35D4;
     /* 0x35D8 */ f32 m35D8;
     /* 0x35DC */ f32 mHangGroundH;

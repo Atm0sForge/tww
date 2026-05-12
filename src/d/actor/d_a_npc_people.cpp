@@ -6584,7 +6584,7 @@ u16 daNpcPeople_c::next_msgStatus(u32* pMsgNo) {
                             }
                             else {
                                 m734 = l_msg_xy_sa5_yes;
-                                dComIfGp_setItemBeastNumCount(0x0, -3);
+                                dComIfGp_setItemBeastNumCount(dBeastIdx_SKULL_NECKLACE_e, -3);
                                 dComIfGp_resetItemTimer(0xE10);
                                 mEtcFlag |= 0x100000;
                             }

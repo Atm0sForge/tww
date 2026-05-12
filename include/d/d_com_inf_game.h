@@ -1214,12 +1214,25 @@ inline void dComIfGs_setPictureNum(u8 num) {
     g_dComIfG_gameInfo.save.getPlayer().getItemRecord().setPictureNum(num);
 }
 
-inline u8 dComIfGs_getBeastNum(int i_idx) {
-    return g_dComIfG_gameInfo.save.getPlayer().getBagItemRecord().getBeastNum(i_idx);
+// The index into the Spoils Bag for each type of spoil.
+enum dBeastIndex_e {
+    /* 0x0 */ dBeastIdx_SKULL_NECKLACE_e,
+    /* 0x1 */ dBeastIdx_BOKOBABA_SEED_e,
+    /* 0x2 */ dBeastIdx_GOLDEN_FEATHER_e,
+    /* 0x3 */ dBeastIdx_KNIGHTS_CREST_e,
+    /* 0x4 */ dBeastIdx_RED_JELLY_e,
+    /* 0x5 */ dBeastIdx_GREEN_JELLY_e,
+    /* 0x6 */ dBeastIdx_BLUE_JELLY_e,
+    /* 0x7 */ dBeastIdx_JOY_PENDANT_e,
+    /* 0x8 */ dBeastIdx_COUNT_e,
+};
+
+inline u8 dComIfGs_getBeastNum(int i_beastIdx) {
+    return g_dComIfG_gameInfo.save.getPlayer().getBagItemRecord().getBeastNum(i_beastIdx);
 }
 
-inline void dComIfGs_setBeastNum(int i_idx, u8 num) {
-    g_dComIfG_gameInfo.save.getPlayer().getBagItemRecord().setBeastNum(i_idx, num);
+inline void dComIfGs_setBeastNum(int i_beastIdx, u8 num) {
+    g_dComIfG_gameInfo.save.getPlayer().getBagItemRecord().setBeastNum(i_beastIdx, num);
 }
 
 inline u8 dComIfGs_getBaitNum(int i_idx) {
@@ -1771,12 +1784,12 @@ inline void dComIfGs_onGetItem(int i_field, u8 i_item) {
     return g_dComIfG_gameInfo.save.getPlayer().getGetItem().onItem(i_field, i_item);
 }
 
-inline BOOL dComIfGs_isGetItemBeast(u8 i_beast) {
-    return g_dComIfG_gameInfo.save.getPlayer().getGetBagItem().isBeast(i_beast);
+inline BOOL dComIfGs_isGetItemBeast(u8 i_beastIdx) {
+    return g_dComIfG_gameInfo.save.getPlayer().getGetBagItem().isBeast(i_beastIdx);
 }
 
-inline void dComIfGs_onGetItemBeast(u8 i_beast) {
-    g_dComIfG_gameInfo.save.getPlayer().getGetBagItem().onBeast(i_beast);
+inline void dComIfGs_onGetItemBeast(u8 i_beastIdx) {
+    g_dComIfG_gameInfo.save.getPlayer().getGetBagItem().onBeast(i_beastIdx);
 }
 
 inline BOOL dComIfGs_isGetItemBait(u8 i_bait) {
@@ -2633,16 +2646,16 @@ inline void dComIfGp_clearItemArrowNumCount() {
     g_dComIfG_gameInfo.play.clearItemArrowNumCount();
 }
 
-inline void dComIfGp_setItemBeastNumCount(int i_idx, s16 num) {
-    g_dComIfG_gameInfo.play.setItemBeastNumCount(i_idx, num);
+inline s16 dComIfGp_getItemBeastNumCount(int i_beastIdx) {
+    return g_dComIfG_gameInfo.play.getItemBeastNumCount(i_beastIdx);
 }
 
-inline s16 dComIfGp_getItemBeastNumCount(int i_idx) {
-    return g_dComIfG_gameInfo.play.getItemBeastNumCount(i_idx);
+inline void dComIfGp_setItemBeastNumCount(int i_beastIdx, s16 num) {
+    g_dComIfG_gameInfo.play.setItemBeastNumCount(i_beastIdx, num);
 }
 
-inline void dComIfGp_clearItemBeastNumCount(int i_idx) {
-    g_dComIfG_gameInfo.play.clearItemBeastNumCount(i_idx);
+inline void dComIfGp_clearItemBeastNumCount(int i_beastIdx) {
+    g_dComIfG_gameInfo.play.clearItemBeastNumCount(i_beastIdx);
 }
 
 inline u8 dComIfGp_getScopeType() {

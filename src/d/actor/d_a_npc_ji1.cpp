@@ -233,7 +233,7 @@ daNpc_Ji1_HIO_c::daNpc_Ji1_HIO_c() {
 
 /* 000003C0-000003E4       .text daNpc_Ji1_XyCheckCB__FPvi */
 static s16 daNpc_Ji1_XyCheckCB(void*, int i_itemBtn) {
-    return dComIfGp_getSelectItem(i_itemBtn) == BOKO_BELT ? TRUE : FALSE;
+    return dComIfGp_getSelectItem(i_itemBtn) == dItem_KNIGHTS_CREST_e ? TRUE : FALSE;
 }
 
 /* 000003E4-00000404       .text daJi1_CoHitCallback__FP10fopAc_ac_cP12dCcD_GObjInfP10fopAc_ac_cP12dCcD_GObjInf */
@@ -848,11 +848,11 @@ u32 daNpc_Ji1_c::getMsg2ndType() {
             msgNo = 0x9AE;
         }
 #if VERSION == VERSION_DEMO
-        else if(dComIfGs_getBeastNum(3) < 3) {
+        else if(dComIfGs_getBeastNum(dBeastIdx_KNIGHTS_CREST_e) < 3) {
             msgNo = 0x9BB;
         }
 #else
-        else if(dComIfGs_getBeastNum(3) < 10) {
+        else if(dComIfGs_getBeastNum(dBeastIdx_KNIGHTS_CREST_e) < 10) {
             msgNo = 0x9BB;
         }
 #endif
@@ -953,12 +953,12 @@ u16 daNpc_Ji1_c::next_msgStatus(u32* pMsgNo) {
             break;
         case 0x9AF:
 #if VERSION == VERSION_DEMO
-            if(dComIfGs_getBeastNum(3) >= 3) {
-                dComIfGp_setItemBeastNumCount(3, -3);
+            if(dComIfGs_getBeastNum(dBeastIdx_KNIGHTS_CREST_e) >= 3) {
+                dComIfGp_setItemBeastNumCount(dBeastIdx_KNIGHTS_CREST_e, -3);
                 mMsgNo = 0x9B0;
             }
 #else
-            if(dComIfGs_getBeastNum(3) >= 10) {
+            if(dComIfGs_getBeastNum(dBeastIdx_KNIGHTS_CREST_e) >= 10) {
                 mMsgNo = 0x9B0;
             }
 #endif
@@ -3043,7 +3043,7 @@ BOOL daNpc_Ji1_c::teachSPRollCutAction(void*) {
                 dComIfGs_onEventBit(dSv_event_flag_c::UNK_0B20);
                 dComIfGs_offTmpBit(dSv_event_tmp_flag_c::UNK_0402);
 #if VERSION > VERSION_DEMO
-                dComIfGp_setItemBeastNumCount(3, -10);
+                dComIfGp_setItemBeastNumCount(dBeastIdx_KNIGHTS_CREST_e, -10);
 #endif
                 field_0x7E0.OffTgShield();
                 field_0xC84 = 10;
