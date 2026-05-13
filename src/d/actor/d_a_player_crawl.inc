@@ -239,22 +239,22 @@ BOOL daPy_lk_c::checkCrawlSideWall(
 /* 801392BC-80139424       .text setDoStatusCrawl__9daPy_lk_cFv */
 void daPy_lk_c::setDoStatusCrawl() {
     dComIfGp_setRStatus(dActStts_CROUCH_e);
-    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x80)) {
+    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000080_e)) {
         dComIfGp_setAStatus(dActStts_RETURN_e);
-        if (checkSubjectEnd(1) || mWaterY > current.pos.y) {
-            dComIfGp_clearPlayerStatus0(0, daPyStts0_UNK2000_e);
+        if (checkSubjectEnd(TRUE) || mWaterY > current.pos.y) {
+            dComIfGp_clearPlayerStatus0(0, daPyStts0_SUBJECT_e);
         } else {
-            dComIfGp_setPlayerStatus0(0, daPyStts0_UNK2000_e);
+            dComIfGp_setPlayerStatus0(0, daPyStts0_SUBJECT_e);
         }
     } else if (dCam_getBody()->ChangeModeOK(4)) {
         if (mWaterY <= current.pos.y) {
             onResetFlg0(daPyRFlg0_SUBJECT_ACCEPT);
-            if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x1000) && !dComIfGp_event_runCheck()) {
+            if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00001000_e) && !dComIfGp_event_runCheck()) {
                 setSubjectMode();
             }
         }
     }
-    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x80) &&
+    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000080_e) &&
         (mCurProc != daPyProc_CRAWL_MOVE_e || mProcVar0.m3570 == 0))
     {
         setBodyAngleToCamera();
@@ -338,7 +338,7 @@ BOOL daPy_lk_c::procCrawlMove_init(s16 param_0, s16 param_1) {
         var_r29 = 1;
     }
     BOOL var_r27;
-    if (dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e)) {
+    if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e)) {
         var_r27 = 1;
     } else {
         var_r27 = 0;
@@ -361,7 +361,7 @@ BOOL daPy_lk_c::procCrawlMove_init(s16 param_0, s16 param_1) {
     m35E4 = 1.0f;
     dComIfGp_setPlayerStatus0(0, daPyStts0_CRAWL_e);
     if (var_r27 != 0) {
-        dComIfGp_setPlayerStatus0(0, daPyStts0_UNK2000_e);
+        dComIfGp_setPlayerStatus0(0, daPyStts0_SUBJECT_e);
     }
     return true;
 }
@@ -534,7 +534,7 @@ BOOL daPy_lk_c::procCrawlMove() {
 
 /* 8013A004-8013A0F0       .text procCrawlAutoMove_init__9daPy_lk_cFiP4cXyz */
 BOOL daPy_lk_c::procCrawlAutoMove_init(int param_0, cXyz* param_1) {
-    BOOL uVar1 = dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e) ? TRUE : FALSE;
+    BOOL uVar1 = dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e) ? TRUE : FALSE;
     commonProcInit(daPyProc_CRAWL_AUTO_MOVE_e);
     m370C = *param_1;
     m35E4 = 1.0f;
@@ -549,7 +549,7 @@ BOOL daPy_lk_c::procCrawlAutoMove_init(int param_0, cXyz* param_1) {
         mAcchCir[i].SetWallR(9.99f);
     }
     if (uVar1) {
-        dComIfGp_setPlayerStatus0(0, daPyStts0_UNK2000_e);
+        dComIfGp_setPlayerStatus0(0, daPyStts0_SUBJECT_e);
     }
     return true;
 }

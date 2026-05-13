@@ -2317,7 +2317,7 @@ BOOL daNpc_Ji1_c::reiAction(void*) {
 
         field_0xC78++;
         l_msgId = fpcM_ERROR_PROCESS_ID_e;
-        dComIfGp_onCameraAttentionStatus(0, 4);
+        dComIfGp_onCameraAttentionStatus(0, dCamAttnStts_00000004_e);
     }
     else if(field_0xC78 != -1) {
         if(l_msgId == fpcM_ERROR_PROCESS_ID_e) {
@@ -2364,7 +2364,7 @@ BOOL daNpc_Ji1_c::reiAction(void*) {
                     setAnm(0, 16.0f, 0);
                     setAction(&daNpc_Ji1_c::normalAction, NULL);
                     dComIfGp_event_reset();
-                    dComIfGp_offCameraAttentionStatus(0, 4);
+                    dComIfGp_offCameraAttentionStatus(0, dCamAttnStts_00000004_e);
                     field_0xD74 = 0;
                 }
             }

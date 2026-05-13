@@ -72,7 +72,7 @@ BOOL daPy_lk_c::returnBoomerang() {
 
 /* 801497A4-8014984C       .text checkNextActionBoomerangReady__9daPy_lk_cFv */
 BOOL daPy_lk_c::checkNextActionBoomerangReady() {
-    if (!itemButton() && (mpAttnActorLockOn != NULL || dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x10))) {
+    if (!itemButton() && (mpAttnActorLockOn != NULL || dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000010_e))) {
         setActAnimeUpper(
             LKANM_BCK_BOOMTHROW,
             UPPER_MOVE2_e,

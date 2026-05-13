@@ -1697,7 +1697,7 @@ BOOL daPy_lk_c::draw() {
         return TRUE;
     }
     
-    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x20)) {
+    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000020_e)) {
         offBodyEffect();
     } else {
         onBodyEffect();
@@ -1796,7 +1796,7 @@ BOOL daPy_lk_c::draw() {
                 mtl->getShape()->show();
             }
         }
-    } else if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x20)) {
+    } else if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000020_e)) {
         for (int i = 0; i < ARRAY_SIZE(mpZOffBlendShape); i++) {
             mpZOffBlendShape[i]->hide();
             mpZOffNoneShape[i]->hide();
@@ -1905,7 +1905,7 @@ BOOL daPy_lk_c::draw() {
         entryDLSetLight(mpHandsModel, checkFreezeState());
         if (checkNoResetFlg1(daPyFlg1_CASUAL_CLOTHES) && !checkCaughtShapeHide()
 #if VERSION > VERSION_DEMO
-            && !dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x20)
+            && !dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000020_e)
 #endif
         ) {
             entryDLSetLight(mpKatsuraModel, checkFreezeState());
@@ -1952,7 +1952,7 @@ BOOL daPy_lk_c::draw() {
             }
             mDoExt_modelUpdateDL(mpSuimenMunyaModel);
         }
-        if (!r24 && !dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x20)) {
+        if (!r24 && !dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000020_e)) {
             if (checkSwordEquip()
 #if VERSION == VERSION_DEMO
                 && !checkLastDemoSwordNoDraw(1)
@@ -2005,7 +2005,7 @@ BOOL daPy_lk_c::draw() {
             updateDLSetLight(mpBottleCapModel, 0);
         }
         
-        if (!dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x20)) {
+        if (!dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000020_e)) {
             f32 frame = mYaura00rBrk.getBrkAnm()->getFrame();
             if (frame > 0.0f) {
                 daPy_aura_c* auraEntry = &mMagicArmorAuraEntries[0];
@@ -2706,7 +2706,7 @@ BOOL daPy_lk_c::setBodyAngleToCamera() {
     s16 local_16;
     s16 local_18;
 
-    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x10) != 0) {
+    if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000010_e) != 0) {
         bVar1 = dCam_getBody()->CalcSubjectAngle(&local_16, &local_18);
         if (bVar1 != 0) {
             shape_angle.y = local_18;
@@ -4343,7 +4343,7 @@ BOOL daPy_lk_c::checkNextActionFromButton() {
 #endif
     ) {
         onResetFlg0(daPyRFlg0_SUBJECT_ACCEPT);
-        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x1000)) {
+        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00001000_e)) {
             return procSubjectivity_init(0);
         }
     }
@@ -5706,7 +5706,7 @@ BOOL daPy_lk_c::checkScopeEnd() {
 
 /* 80112100-8011215C       .text setSubjectMode__9daPy_lk_cFv */
 void daPy_lk_c::setSubjectMode() {
-    dComIfGp_setPlayerStatus0(0, daPyStts0_UNK2000_e);
+    dComIfGp_setPlayerStatus0(0, daPyStts0_SUBJECT_e);
     seStartSystem(JA_SE_SUBJ_VIEW_IN);
 }
 
@@ -5723,7 +5723,12 @@ BOOL daPy_lk_c::checkMaskDraw() {
 /* 801121C8-80112280       .text checkSubjectEnd__9daPy_lk_cFi */
 BOOL daPy_lk_c::checkSubjectEnd(BOOL i_playSound) {
     // TODO: these trigger/button checks are likely inlines
-    if(dComIfGp_event_runCheck() || (mItemTrigger & (BTN_A | BTN_B)) || (mItemButton & BTN_L) || dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x2000)) {
+    if(
+        dComIfGp_event_runCheck() ||
+        (mItemTrigger & (BTN_A | BTN_B)) ||
+        (mItemButton & BTN_L) ||
+        dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00002000_e)
+    ) {
         if(i_playSound) {
             seStartSystem(JA_SE_SUBJ_VIEW_OUT);
         }
@@ -5960,7 +5965,7 @@ BOOL daPy_lk_c::procScope() {
     if (checkScopeEnd()) {
         procWait_init();
     } else {
-        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x10)) {
+        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00000010_e)) {
             shape_angle.y = fopCamM_GetAngleY(dComIfGp_getCamera(mCameraInfoIdx));
             current.angle.y = shape_angle.y;
         }
@@ -6454,7 +6459,7 @@ BOOL daPy_lk_c::procCrouchDefense() {
     dComIfGp_setRStatus(dActStts_DEFEND_e);
     if (dCam_getBody()->ChangeModeOK(4) && current.pos.y >= mWaterY) {
         onResetFlg0(daPyRFlg0_SUBJECT_ACCEPT);
-        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x1000) && !dComIfGp_event_runCheck()) {
+        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00001000_e) && !dComIfGp_event_runCheck()) {
             return procSubjectivity_init(1);
         }
     }
@@ -6576,7 +6581,7 @@ BOOL daPy_lk_c::procCrouch() {
     dComIfGp_setRStatus(dActStts_CROUCH_e);
     if (dCam_getBody()->ChangeModeOK(4) && current.pos.y >= mWaterY) {
         onResetFlg0(daPyRFlg0_SUBJECT_ACCEPT);
-        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, 0x1000) && !dComIfGp_event_runCheck()) {
+        if (dComIfGp_checkCameraAttentionStatus(mCameraInfoIdx, dCamAttnStts_00001000_e) && !dComIfGp_event_runCheck()) {
             return procSubjectivity_init(1);
         }
     }
@@ -9722,7 +9727,7 @@ void daPy_lk_c::checkLightHit() {
         }
         resetCurse();
     }
-    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e) &&
+    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e) &&
         checkResetFlg0(daPyRFlg0_LIGHT_REFLECT))
     {
         if (m342C.getEmitter() == NULL) {
@@ -10279,7 +10284,7 @@ void daPy_lk_c::setAttentionPos() {
             static const Vec offset = {0.0f, 30.0f, 20.0f};
             mDoMtx_multVec(mpCLModel->getBaseTRMtx(), &offset, &attention_info.position);
         }
-    } else if (dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e)) {
+    } else if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e)) {
         {
             static const Vec offset = {0.0f, 70.0f, 0.0f};
             mDoMtx_stack_c::ZXYrotS(mBodyAngle.x, shape_angle.y, 0);

@@ -282,11 +282,19 @@ BOOL daShip_c::draw() {
         m02A4->setTranslationX(m03D4);
     }
 
-    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e) || dComIfGp_getAttention().Lockon() || daPy_getPlayerLinkActorClass()->getBodyAngleX() > -0x1000) {
+    if (
+        !dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e) ||
+        dComIfGp_getAttention().Lockon() ||
+        daPy_getPlayerLinkActorClass()->getBodyAngleX() > -0x1000
+    ) {
         mDoExt_modelEntryDL(model);
     }
 
-    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e) || daPy_getPlayerLinkActorClass()->checkNoControll() || !dComIfGp_checkCameraAttentionStatus(0, 0x22)) {
+    if (
+        !dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e) ||
+        daPy_getPlayerLinkActorClass()->checkNoControll() ||
+        !dComIfGp_checkCameraAttentionStatus(0, dCamAttnStts_SUBJECT_e | dCamAttnStts_00000020_e)
+    ) {
         offStateFlg(daSFLG_HEAD_NO_DRAW_e);
         mDoExt_modelEntryDL(model_00);
     }
@@ -1394,7 +1402,7 @@ void daShip_c::setSelfMove(int param_1) {
     cLib_addCalcAngleS(&m0366, sVar2, 4, l_HIO.tiller_speed, 0x100);
     setMoveAngle(m0366);
     if (!checkStateFlg(daSFLG_FLY_e)) {
-        if (dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e) || dComIfGp_event_runCheck() || daPy_getPlayerLinkActorClass()->checkNoControll()) {
+        if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e) || dComIfGp_event_runCheck() || daPy_getPlayerLinkActorClass()->checkNoControll()) {
             firstDecrementShipSpeed(0.0f);
         }
         else {
@@ -2493,7 +2501,7 @@ BOOL daShip_c::procTalk() {
     firstDecrementShipSpeed(0.0f);
     setMoveAngle(0);
     if (m0430 == fpcM_ERROR_PROCESS_ID_e) {
-        if (dComIfGp_checkCameraAttentionStatus(dComIfGp_getPlayerCameraID(0), 4)) {
+        if (dComIfGp_checkCameraAttentionStatus(dComIfGp_getPlayerCameraID(0), dCamAttnStts_00000004_e)) {
             m0430 = fopMsgM_messageSet(mNextMessageNo, &eyePos);
         }
     }
@@ -3484,7 +3492,7 @@ void daShip_c::setHeadAnm() {
         }
     } 
     else if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e)) { 
-        if (dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e | daPyStts0_UNK2000_e | daPyStts0_HOOKSHOT_AIM_e | daPyStts0_BOOMERANG_AIM_e | daPyStts0_TELESCOPE_LOOK_e) || 
+        if (dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e | daPyStts0_SUBJECT_e | daPyStts0_HOOKSHOT_AIM_e | daPyStts0_BOOMERANG_AIM_e | daPyStts0_TELESCOPE_LOOK_e) || 
             dComIfGp_checkPlayerStatus1(0, daPyStts1_PICTO_BOX_AIM_e) || 
             mCurMode == 9) {
             newFileIndex = SHIP_BCK_KYAKKAN1;
@@ -3784,7 +3792,7 @@ BOOL daShip_c::execute() {
                 speedF = prev_speedF;
                 if (mTornadoActor) {
                     fVar4 = m0404 * 40.0f + 30.0f;
-                    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e) || !dComIfGp_checkCameraAttentionStatus(0, 0x20)) {
+                    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e) || !dComIfGp_checkCameraAttentionStatus(0, dCamAttnStts_00000020_e)) {
                         fVar4 *= 1.2f;
                     }
                 }
@@ -3819,7 +3827,7 @@ BOOL daShip_c::execute() {
             }
             else if (checkForceMove() && !dComIfGp_event_runCheck()) {
                 if (mTornadoActor) {
-                    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e) || !dComIfGp_checkCameraAttentionStatus(0, 0x20)) {
+                    if (!dComIfGp_checkPlayerStatus0(0, daPyStts0_BOW_AIM_e) || !dComIfGp_checkCameraAttentionStatus(0, dCamAttnStts_00000020_e)) {
                         prev_speedF = 25.0f;
                     }
                     else {

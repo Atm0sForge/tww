@@ -46,7 +46,7 @@ enum daPy__PlayerStatus0 {
     daPyStts0_UNK400_e         = 0x00000400,
     daPyStts0_UNK800_e         = 0x00000800,
     daPyStts0_BOW_AIM_e        = 0x00001000,
-    daPyStts0_UNK2000_e        = 0x00002000,
+    daPyStts0_SUBJECT_e        = 0x00002000, // First person
     daPyStts0_HOOKSHOT_AIM_e   = 0x00004000,
     daPyStts0_SWORD_SWING_e    = 0x00008000,
     daPyStts0_SHIP_RIDE_e      = 0x00010000,
@@ -69,7 +69,7 @@ enum daPy__PlayerStatus0 {
     // This is some combination of flags which is seemingly related to "judgement", used in dAttention_c
     daPyStts0_UNK37a02371_e    = daPyStts0_UNK1_e | daPyStts0_UNK10_e | daPyStts0_UNK20_e
                                  | daPyStts0_UNK40_e | daPyStts0_UNK100_e | daPyStts0_UNK200_e
-                                 | daPyStts0_UNK2000_e| daPyStts0_TELESCOPE_LOOK_e
+                                 | daPyStts0_SUBJECT_e| daPyStts0_TELESCOPE_LOOK_e
                                  | daPyStts0_UNK800000_e | daPyStts0_UNK1000000_e
                                  | daPyStts0_UNK2000000_e | daPyStts0_UNK4000000_e
                                  | daPyStts0_UNK10000000_e | daPyStts0_UNK20000000_e
@@ -96,6 +96,23 @@ enum daPy__PlayerStatus1 {
     daPyStts1_UNK20000_e           = 0x00020000,
     daPyStts1_UNK40000_e           = 0x00040000,
     daPyStts1_UNK80000_e           = 0x00080000,
+};
+
+enum dCamera__AttentionStatus {
+    dCamAttnStts_00000001_e = 0x00000001, // just locked on?
+    dCamAttnStts_SUBJECT_e = 0x00000002, // First person
+    dCamAttnStts_00000004_e = 0x00000004,
+    dCamAttnStts_TELESCOPE_LOOK_e = 0x00000008,
+    dCamAttnStts_00000010_e = 0x00000010,
+    dCamAttnStts_00000020_e = 0x00000020,
+    dCamAttnStts_PICTO_BOX_AIM_e = 0x00000040,
+    dCamAttnStts_00000080_e = 0x00000080,
+    dCamAttnStts_00000100_e = 0x00000100,
+    // dCamAttnStts_00000200_e = 0x00000200,
+    dCamAttnStts_00000400_e = 0x00000400, // manual camera control, as opposed to free camera control?
+    // dCamAttnStts_00000800_e = 0x00000800,
+    dCamAttnStts_00001000_e = 0x00001000, // just pressed c-stick up to enter first person?
+    dCamAttnStts_00002000_e = 0x00002000,
 };
 
 class __d_timer_info_c {

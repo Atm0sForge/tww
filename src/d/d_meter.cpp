@@ -787,18 +787,18 @@ void dMeter_statusCheck(sub_meter_class* i_Meter) {
                 dComIfGp_setAStatus(dActStts_BLANK_e);
             }
         } else if (
-            dComIfGp_checkPlayerStatus0(0, daPyStts0_UNK2000_e) ||
+            dComIfGp_checkPlayerStatus0(0, daPyStts0_SUBJECT_e) ||
             // @bug Out of bounds array read.
             // It seems like the developers probably intended to have a check like this:
-            //   dComIfGp_checkCameraAttentionStatus(0, 0x100)
+            //   dComIfGp_checkCameraAttentionStatus(0, dCamAttnStts_00000100_e)
             // Which would have checked if bit 0x100 of camera 0's attention statuses is set.
             // But made a mistake and instead typed:
-            //   dComIfGp_getCameraAttentionStatus(0x100)
+            //   dComIfGp_getCameraAttentionStatus(dCamAttnStts_00000100_e)
             // Which checks if any of camera 0x100's attention statuses are set.
             // As there is only a single camera, this mistake causes an OoB read 256 elements past the end of the array.
             // This winds up reading one of the matrix floats of a shadow as an integer, equivalent to the following check:
             //   *(u32*)&g_dComIfG_gameInfo.drawlist.mShadowControl.mSimple[117].mVolumeMtx[1][2] != 0
-            (dComIfGp_getCameraAttentionStatus(0x100) && dComIfGp_checkPlayerStatus0(0, daPyStts0_CRAWL_e))
+            (dComIfGp_getCameraAttentionStatus(dCamAttnStts_00000100_e) && dComIfGp_checkPlayerStatus0(0, daPyStts0_CRAWL_e))
         ) {
             i_Meter->mStatusFlags |= dMtrStts_UNK100000_e;
         }
@@ -4344,7 +4344,6 @@ void dMeter_menuLRMove(sub_meter_class* i_Meter) {
 
 /* 801FA918-801FBB28       .text dMeter_menuPlusMove__FP15sub_meter_class */
 void dMeter_menuPlusMove(sub_meter_class* i_Meter) {
-    /* Nonmatching */
     f32 fVar1;
     int iVar3;
     f32 x;
@@ -4549,12 +4548,12 @@ void dMeter_menuPlusMove(sub_meter_class* i_Meter) {
         switch (moveStatus) {
         case 2:
         case 3:
+        case 6:
+        case 7:
             x = g_meterHIO.field_0x9c;
             y = g_meterHIO.field_0x9e;
             break;
         case 4:
-        case 6:
-        case 7:
             x = g_meterHIO.field_0x9c + 0x52;
             y = g_meterHIO.field_0x9e;
             break;
@@ -4580,16 +4579,16 @@ void dMeter_menuPlusMove(sub_meter_class* i_Meter) {
                         ((i_Meter->field_0x1948.mPosCenter.x + i_Meter->field_0x16e0.mSize.x / 2.0f) - i_Meter->field_0x0100[2].mPosCenterOrig.x);
         local_98_y[2] = i_Meter->field_0x1948.mPosCenter.y - i_Meter->field_0x0100[2].mPosCenterOrig.y;
     } else {
-        s16 tmp3 = dMap_c::mDispSizeX;
-        s16 tmp2 = dMap_getMapDispPosLeftUpX();
-        local_98_x[2] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
-        local_98_x[1] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
-        local_98_x[0] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
-        tmp3 = dMap_c::mDispSizeY;
-        tmp2 = dMap_getMapDispPosLeftUpY();
-        local_98_y[2] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
-        local_98_y[1] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
-        local_98_y[0] = (tmp2 + tmp3 / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
+        s16 width = dMap_c::getMapDspSizeWidth();
+        s16 left = dMap_getMapDispPosLeftUpX();
+        local_98_x[2] = (left + width / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
+        local_98_x[1] = (left + width / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
+        local_98_x[0] = (left + width / 2.0f) - i_Meter->field_0x0100[1].mPosCenterOrig.x;
+        s16 height = dMap_c::getMapDspSizeHeight();
+        s16 top = dMap_getMapDispPosLeftUpY();
+        local_98_y[2] = (top + height / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
+        local_98_y[1] = (top + height / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
+        local_98_y[0] = (top + height / 2.0f) - i_Meter->field_0x0100[0].mPosCenterOrig.y;
     }
     dVar13 = dMap_getMapDispPosLeftUpX() - 0x19;
     dVar12 = dMap_getMapDispPosLeftUpY() - 0x152;
@@ -4605,7 +4604,7 @@ void dMeter_menuPlusMove(sub_meter_class* i_Meter) {
     }
     dVar13 = fopMsgM_valueIncrease(5, 5 - i_Meter->field_0x02c0.mUserArea, 0);
     fopMsgM_setNowAlpha(&i_Meter->field_0x02c0, dVar13);
-    dMap_c::mAlpha = dVar13 * 255.0f;
+    dMap_c::setMapAlpha(dVar13 * 255.0f);
     if (!(dKyw_gbwind_use_check()) || (dMenu_flag())) {
         fopMsgM_setNowAlphaZero(&i_Meter->field_0x02f8);
     } else {
@@ -5418,9 +5417,9 @@ void dMeter_compassMove(sub_meter_class* i_Meter) {
         dMeter_compassGetOnProc(i_Meter);
         dMeter_compassAlpha(i_Meter);
         if (i_Meter->field_0x3027 == 0) {
-            dMap_c::mMapDispMode = 1;
+            dMap_c::setMapDispMode(1);
         } else {
-            dMap_c::mMapDispMode = 0;
+            dMap_c::setMapDispMode(0);
         }
     } else {
         dMeter_compassGetOffProc(i_Meter);
@@ -5726,7 +5725,7 @@ void dMeter_mapMove(sub_meter_class* i_Meter) {
                 ((CPad_CHECK_TRIG_LEFT(0) != 0) || (CPad_CHECK_TRIG_RIGHT(0))))
             {
                 if (CPad_CHECK_TRIG_LEFT(0) != 0) {
-                    if ((dMap_c::mAlpha != 0) && ((s32)dMeter_mMapCtrlDisp.field_0x0 != 0)) {
+                    if ((dMap_c::getMapAlpha() != 0) && ((s32)dMeter_mMapCtrlDisp.field_0x0 != 0)) {
                         if (dMap_isEnableDispMap()) {
                             dMeter_mMapCtrlDisp.field_0x0 = 0;
                             dMeter_mMapCtrlDisp.field_0x1 = 0;
@@ -5734,7 +5733,7 @@ void dMeter_mapMove(sub_meter_class* i_Meter) {
                         i_Meter->field_0x3029 = 0;
                         mDoAud_seStart(JA_SE_MAP_CANCEL);
                     }
-                } else if ((CPad_CHECK_TRIG_RIGHT(0) != 0) && (dMap_c::mAlpha != 0)) {
+                } else if ((CPad_CHECK_TRIG_RIGHT(0) != 0) && (dMap_c::getMapAlpha() != 0)) {
                     if ((s32)dMeter_mMapCtrlDisp.field_0x0 == 0) {
                         if (dMap_isEnableDispMap()) {
                             dMeter_mMapCtrlDisp.field_0x0 = 1;
@@ -5770,9 +5769,9 @@ void dMeter_mapMove(sub_meter_class* i_Meter) {
                 i_Meter->field_0x3027 = 0;
             }
             if (i_Meter->field_0x3027 == 0) {
-                dMap_c::mMapDispMode = 1;
+                dMap_c::setMapDispMode(1);
             } else {
-                dMap_c::mMapDispMode = 0;
+                dMap_c::setMapDispMode(0);
             }
             if (((s32)dMeter_mMapCtrlDisp.field_0x0 != 0) && (mapTimer != 6)) {
                 mapTimer = 6;
@@ -7429,9 +7428,7 @@ void mapCtrlDisp_c::initMapCtrlDisp() {
 /* 80205A44-80205D24       .text moveMapCtrlDisp__13mapCtrlDisp_cFv */
 void mapCtrlDisp_c::moveMapCtrlDisp() {
     f32 fVar1;
-    s8 uVar6;
     f32 dVar7;
-
     if (dCam_isManual(dComIfGp_getCamera(dComIfGp_getPlayerCameraID(0))) != 0) {
         if (field_0x2 < 9) {
             field_0x2++;
@@ -7457,23 +7454,23 @@ void mapCtrlDisp_c::moveMapCtrlDisp() {
         dVar7 = fopMsgM_valueIncrease(5, field_0x2, 2);
         fVar1 = 1.1f;
     }
-    dMap_c::mIconDispMode = 0;
-    uVar6 = (u8)((dVar7 * 255.0f) * (g_meter_mapHIO.field_0x6 / 255.0f));
-    dMap_c::mIconFreeAlpha = (u8)uVar6;
-    dMap_c::mIconFreeScale = fVar1 * g_meter_mapHIO.field_0x10;
-    if ((u8)uVar6 != 0) {
-        dMap_c::mIconDispMode = 1;
+    dMap_c::setIconDispMode(dMapIconDisp_NONE_e);
+    s8 alpha = (u8)((dVar7 * 255.0f) * (g_meter_mapHIO.field_0x6 / 255.0f));
+    dMap_c::setIconFreeAlpha(alpha);
+    dMap_c::setIconFreeScale(fVar1 * g_meter_mapHIO.field_0x10);
+    if ((u8)alpha != 0) {
+        dMap_c::setIconDispMode(dMapIconDisp_FREE_e);
     }
-    if (dComIfGp_checkCameraAttentionStatus(0, 0x400)) {
+    if (dComIfGp_checkCameraAttentionStatus(0, dCamAttnStts_00000400_e)) {
         daPy_py_c* player = daPy_getPlayerActorClass();
         BOOL temp = player->checkSubjectAccept() && !dComIfGp_event_runCheck();
         if (temp) {
-            dMap_c::mIconSelfAlpha = 0xcc;
-            dMap_c::mIconDispMode = 2;
+            dMap_c::setIconSelfAlpha(0xCC);
+            dMap_c::setIconDispMode(dMapIconDisp_SELF_e );
         }
     }
     if (dCam_getBody()->mCurMode == 4) {
-        dMap_c::mIconDispMode = 0;
+        dMap_c::setIconDispMode(dMapIconDisp_NONE_e);
     }
     if (field_0x0 != 0) {
         if (((field_0x4 != 0) && (cLib_addCalcAngleS(&field_0x4, 0, 2, 0x3c, 10) == 0)) && ((field_0x1 & 4) == 0)) {
@@ -7483,10 +7480,10 @@ void mapCtrlDisp_c::moveMapCtrlDisp() {
         cLib_addCalcAngleS(&field_0x4, g_meter_mapHIO.field_0xc - g_meter_mapHIO.field_0x8, 2, 0x3c, 10);
     }
     int uVar6_2 = ((dComIfGp_getWindow(0)->getScissor()->mYOrig + dComIfGp_getWindow(0)->getScissor()->mHeight) - 452.0f);
-    dMap_c::mDispPosLeftUpX = g_meter_mapHIO.field_0x8 + field_0x4;
-    dMap_c::mDispPosLeftUpY = g_meter_mapHIO.field_0xa;
+    dMap_c::setMapDispPosLeftUpX(g_meter_mapHIO.field_0x8 + field_0x4);
+    dMap_c::setMapDispPosLeftUpY(g_meter_mapHIO.field_0xa);
     if ((f32)(uVar6_2) < 0.0f) {
-        dMap_c::mDispPosLeftUpY = uVar6_2 + g_meter_mapHIO.field_0xa;
+        dMap_c::setMapDispPosLeftUpY(uVar6_2 + g_meter_mapHIO.field_0xa);
     }
 }
 
