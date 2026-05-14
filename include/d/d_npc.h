@@ -273,7 +273,7 @@ public:
     virtual u32 getMsg() { return 0; }
     virtual void anmAtr(u16 i_msgStatus) {}
 
-    void setCollision(float radius, float height);
+    void setCollision(f32 radius, f32 height);
     u16 talk(int);
 };  // Size: 0x6C4
 
